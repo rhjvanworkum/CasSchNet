@@ -22,7 +22,6 @@ def xyz_to_extxyz(
     xyz_path,
     extxyz_path,
     atomic_properties="Properties=species:S:1:pos:R:3",
-    molecular_properties=[],
 ):
     """
     Convert a xyz-file to extxyz.
@@ -42,16 +41,8 @@ def xyz_to_extxyz(
             if first_line == "":
                 break
             n_atoms = int(first_line.strip("\n"))
-            molecular_data = xyz_file.readline().strip("/n").split()
-            assert len(molecular_data) == len(molecular_properties), (
-                "The number of datapoints and " "properties do not match!"
-            )
-            comment = " ".join(
-                [
-                    "{}={}".format(prop, val)
-                    for prop, val in zip(molecular_properties, molecular_data)
-                ]
-            )
+
+            comment = ''
             new_file.writelines(str(n_atoms) + "\n")
             new_file.writelines(" ".join([atomic_properties, comment]) + "\n")
             for i in range(n_atoms):
@@ -60,7 +51,7 @@ def xyz_to_extxyz(
     new_file.close()
 
 
-def extxyz_to_db(extxyz_path, db_path):
+def extxyz_to_db(extxyz_path, db_path, molecular_properties=[]):
     r"""
     Convertes en extxyz-file to an ase database
     Args:
@@ -71,9 +62,8 @@ def extxyz_to_db(extxyz_path, db_path):
         with open(extxyz_path) as f:
             for at in tqdm(read_xyz(f, index=slice(None)), "creating ase db"):
                 data = {}
-                if at.has("forces"):
-                    data["forces"] = at.get_forces()
-                data.update(at.info)
+                for property in molecular_properties:
+                  data.update(property)
                 conn.write(at, data=data)
 
 def xyz_to_db(
@@ -93,9 +83,9 @@ def xyz_to_db(
     """
     # build temp file in extended xyz format
     extxyz_path = os.path.join(tempfile.mkdtemp(), "temp.extxyz")
-    xyz_to_extxyz(xyz_path, extxyz_path, atomic_properties, molecular_properties)
+    xyz_to_extxyz(xyz_path, extxyz_path, atomic_properties)
     # build database from extended xyz
-    extxyz_to_db(extxyz_path, db_path)
+    extxyz_to_db(extxyz_path, db_path, molecular_properties)
 
 
 def read_in_orb_file(orb_file):
@@ -137,4 +127,4 @@ def parse_molcas_rasscf_calculation(workdir, db_path):
         orb_file = file
 
   orbitals = read_in_orb_file(workdir + orb_file)
-  xyz_to_db(workdir + xyz_file, db_path, "", [{'orbital_coeffs': orbitals}])
+  xyz_to_db(workdir + xyz_file, db_path, atomic_properties="", molecular_properties=[{'orbital_coeffs': orbitals}])

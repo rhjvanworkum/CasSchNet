@@ -6,22 +6,8 @@ import torch.optim
 import torchmetrics
 from pytorch_lightning.loggers import TensorBoardLogger
 
-from src.schnetpack.data.parser import parse_molcas_rasscf_calculation
-
 import src.schnetpack as spk
-
-""" generate ASE database """
-# calc_dir = 'C:/users/rhjva/imperial/molcas_files/fulvene/'
-# db_path = './test.db'
-
-# for _ in range(29):
-#   parse_molcas_rasscf_calculation(calc_dir, db_path)
-
-# from ase.db import connect
-# with connect('./test.db') as conn:
-#   print(conn.count(), conn.metadata)
-  # conn.metadata = {"_distance_unit": 'nm',
-                  #  "_property_unit_dict": {"orbital_coeffs": 1.0}}
+import schnetpack.transform as trn
 
 batch_size = 2
 cutoff = 5.0
@@ -29,18 +15,22 @@ n_coeffs = 1296
 
 """ Initializing a dataset """
 dataset = spk.data.AtomsDataModule(
-  datapath='./test.db',
-  batch_size=1,
-  num_train=0.7,
-  num_val=0.3,
+  datapath='./data/test.db',
+  batch_size=batch_size,
+  num_train=10,
+  num_val=5,
+  transforms=[
+    trn.ASENeighborList(cutoff=5.),
+    trn.CastTo32()
+  ],
   property_units={'orbital_coeffs': 1.0},
-  num_workers=8,
-  pin_memory=False,
+  num_workers=0,
+  pin_memory=True,
   load_properties=['orbital_coeffs']
 )
 
-
 # defining the NN
+pairwise_distance = spk.atomistic.PairwiseDistances()
 representation = spk.representation.SchNet(
     n_atom_basis=64,
     n_interactions=3,
@@ -54,13 +44,13 @@ pred_module = spk.atomistic.Atomwise(
 )
 nnp = spk.model.NeuralNetworkPotential(
   representation=representation,
-  input_modules=None,
+  input_modules=[pairwise_distance],
   output_modules=[pred_module],
 )
 
 # the model output
 output = spk.ModelOutput(
-    name="orbtital_coeffs",
+    name="orbital_coeffs",
     loss_fn=torchmetrics.regression.MeanSquaredError(),
     loss_weight=1.0,
     metrics={
@@ -87,7 +77,7 @@ callbacks = [
         save_last=True,
         dirpath="checkpoints",
         filename="{epoch:02d}",
-        inference_path="best_inference_model"
+        inference_path="best_inference_model.pt"
     ),
     pytorch_lightning.callbacks.EarlyStopping(
         monitor="val_loss", patience=150, mode="min", min_delta=0.0
@@ -99,7 +89,7 @@ logger = TensorBoardLogger("tensorboard/")
 trainer = pytorch_lightning.Trainer(callbacks=callbacks, 
                                     logger=logger,
                                     default_root_dir='./test/',
-                                    max_epochs=3)
+                                    max_epochs=5)
 
 logging.info("Start training")
 trainer.fit(task, datamodule=dataset)

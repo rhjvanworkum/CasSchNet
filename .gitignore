@@ -16,6 +16,12 @@ docs/tutorials/*.db
 docs/tutorials/*.xyz
 docs/tutorials/qm9tut
 
+# new stuff
+data/*
+tensorboard/*
+checkpoints/*
+best_inference_model
+best_inference_model.pot
 
 # hydra stuff
 outputs

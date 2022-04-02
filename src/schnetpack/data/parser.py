@@ -41,6 +41,7 @@ def xyz_to_extxyz(
             if first_line == "":
                 break
             n_atoms = int(first_line.strip("\n"))
+            _ = xyz_file.readline().strip("/n").split()
 
             comment = ''
             new_file.writelines(str(n_atoms) + "\n")
@@ -127,4 +128,5 @@ def parse_molcas_rasscf_calculation(workdir, db_path):
         orb_file = file
 
   orbitals = read_in_orb_file(workdir + orb_file)
+  orbitals = [item for sublist in orbitals for item in sublist]
   xyz_to_db(workdir + xyz_file, db_path, atomic_properties="", molecular_properties=[{'orbital_coeffs': orbitals}])

@@ -16,6 +16,8 @@ docs/tutorials/*.db
 docs/tutorials/*.xyz
 docs/tutorials/qm9tut
 
+wandb/
+
 # new stuff
 data/*
 tensorboard/*
@@ -130,3 +132,4 @@ ENV/
 # experiments
 runs/
 tests/data/tmp/test*
+best_inference_model.pt

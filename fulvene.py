@@ -1,24 +1,26 @@
 import logging
-import os
 
 import pytorch_lightning
 import torch.optim
 import torchmetrics
-from pytorch_lightning.loggers import TensorBoardLogger
+from pytorch_lightning.loggers import WandbLogger
 
 import src.schnetpack as spk
 import schnetpack.transform as trn
 
-batch_size = 2
 cutoff = 5.0
 n_coeffs = 1296
 
+epochs = 100
+batch_size = 16
+lr = 5e-4
+
 """ Initializing a dataset """
 dataset = spk.data.AtomsDataModule(
-  datapath='./data/test.db',
+  datapath='./data/fulvene_SH_200.db',
   batch_size=batch_size,
-  num_train=10,
-  num_val=5,
+  num_train=0.8,
+  num_val=0.2,
   transforms=[
     trn.ASENeighborList(cutoff=5.),
     trn.CastTo32()
@@ -64,7 +66,7 @@ task = spk.AtomisticTask(
     model=nnp,
     outputs=[output],
     optimizer_cls=torch.optim.Adam,
-    optimizer_args={"lr": 5e-4},
+    optimizer_args={"lr": lr},
 )
 
 # callbacks for PyTroch Lightning Trainer
@@ -85,11 +87,11 @@ callbacks = [
     pytorch_lightning.callbacks.LearningRateMonitor(logging_interval="epoch"),
 ]
 
-logger = TensorBoardLogger("tensorboard/")
+logger = WandbLogger(project="schnet-sa-orbitals")
 trainer = pytorch_lightning.Trainer(callbacks=callbacks, 
                                     logger=logger,
                                     default_root_dir='./test/',
-                                    max_epochs=5)
+                                    max_epochs=epochs)
 
 logging.info("Start training")
 trainer.fit(task, datamodule=dataset)

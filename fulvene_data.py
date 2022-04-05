@@ -7,11 +7,19 @@ import numpy as np
 
 
 """ generate ASE database """
-calc_dir = 'C:/users/rhjva/imperial/molcas_files/fulvene/'
-db_path = './data/test.db'
+base_dir = 'C:/users/rhjva/imperial/sharc_files/run01/'
+db_path = './data/fulvene_SH_200.db'
 
-for _ in range(32):
-  parse_molcas_rasscf_calculation(calc_dir, db_path)
+for idx in range(200):
+  parse_molcas_rasscf_calculation(base_dir + 'config_' + str(idx) + '/', db_path)
+
+with connect(db_path) as conn:
+  conn.metadata = {"_distance_unit": 'nm',
+                   "_property_unit_dict": {"orbital_coeffs": 1.0},
+                   "atomrefs": {
+                     'orbital_coeffs': [0.0 for _ in range(32)]
+                    }
+                  }
 
 # with connect('./testje.db') as conn:
 #   for row in conn.select():
@@ -23,15 +31,6 @@ for _ in range(32):
 
 #     for row in conn.select():
 #       print(row['orbital_coeffs'])
-
-
-with connect('./test.db') as conn:
-  conn.metadata = {"_distance_unit": 'nm',
-                   "_property_unit_dict": {"orbital_coeffs": 1.0},
-                   "atomrefs": {
-                     'orbital_coeffs': [0.0 for _ in range(32)]
-                    }
-                  }
   
   # print(len(conn.metadata['atomrefs']['zpve']))
   # print(conn.count())

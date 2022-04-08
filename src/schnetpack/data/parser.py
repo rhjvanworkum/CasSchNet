@@ -1,8 +1,10 @@
 import os
+from typing import List
 from ase.db import connect
 from ase.io.extxyz import read_xyz
 from tqdm import tqdm
 import tempfile
+import numpy as np
 
 def parse_property_string(prop_str):
     """
@@ -89,7 +91,7 @@ def xyz_to_db(
     extxyz_to_db(extxyz_path, db_path, molecular_properties)
 
 
-def read_in_orb_file(orb_file):
+def read_in_orb_file(orb_file : str) -> List[List[float]]:
   orbitals = []
 
   with open(orb_file, 'r') as file:
@@ -115,18 +117,50 @@ def read_in_orb_file(orb_file):
             orbitals[-1].append(float(coeff.replace('\n', '')))
 
   return orbitals
-        
-def parse_molcas_rasscf_calculation(workdir, db_path):
-  xyz_file = None
-  orb_file = None
 
-  for _, _, files in os.walk(workdir):
-    for file in files:
-      if file.split('.')[-1] == 'xyz':
-        xyz_file = file
-      elif file.split('.')[-1] == 'RasOrb':
-        orb_file = file
+def correct_phase(mo_array: np.ndarray) -> None:
+  """
+  mo_array -> List of coeffs for 1 MO among each calculation
+  """
+  ref = mo_array[0]
 
-  orbitals = read_in_orb_file(workdir + orb_file)
-  orbitals = [item for sublist in orbitals for item in sublist]
-  xyz_to_db(workdir + xyz_file, db_path, atomic_properties="", molecular_properties=[{'orbital_coeffs': orbitals}])
+  for idx in range(1, len(mo_array)):
+    if np.dot(mo_array[idx], ref) < 0:
+      mo_array[idx] = np.negative(mo_array[idx])
+
+def parse_molcas_rasscf_calculations(calculation_folders, db_path, correct_phases=False):
+  xyz_files = []
+  all_orbitals = []
+
+  for workdir in calculation_folders:
+    
+    # extract xyz file and orbital file 
+    orb_file = None
+    for _, _, files in os.walk(workdir):
+      for file in files:
+        if file.split('.')[-1] == 'xyz':
+          xyz_files.append(file)
+        elif file.split('.')[-1] == 'RasOrb':
+          orb_file = file
+    
+    # extract orbitals
+    orbitals = read_in_orb_file(workdir + orb_file)
+    all_orbitals.append(orbitals)
+
+  all_orbitals = np.array(all_orbitals)
+
+  # apply phase correction
+  # for all 36 MO's:
+  # take MO from 1st calculation 
+  # for MO's in other calculations:
+  # calculate innerproduct with first one
+  # if this is negative flip every sign in the MO coeff vector
+  if correct_phases:
+    for mo_idx in range(all_orbitals.shape[1]):
+      correct_phase(all_orbitals[:, mo_idx, :])
+
+  for idx, workdir in enumerate(calculation_folders):
+    xyz_to_db(workdir + xyz_files[idx], 
+              db_path, 
+              atomic_properties="",
+              molecular_properties=[{'orbital_coeffs': [item for sublist in all_orbitals[idx] for item in sublist]}])

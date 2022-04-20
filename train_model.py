@@ -7,7 +7,7 @@ import src.schnetpack as spk
 import schnetpack.transform as trn
 from model import get_model
 
-model_name = 'fulvene_wigner_dist_200'
+model_name = 'fulvene_wigner_dist_200_02_painn'
 
 cutoff = 5.0
 n_coeffs = 1296
@@ -18,7 +18,7 @@ lr = 5e-4
 
 """ Initializing a dataset """
 dataset = spk.data.AtomsDataModule(
-  datapath='./data/fulvene_wignerdist_200.db',
+  datapath='./data/fulvene_wigner_dist_200_02.db',
   batch_size=batch_size,
   num_train=0.8,
   num_val=0.2,

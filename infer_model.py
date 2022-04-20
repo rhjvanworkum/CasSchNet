@@ -79,11 +79,11 @@ def predict_orbital_coeffs(geometry_path: str, model_path: str) -> np.ndarray:
 if __name__ == "__main__":
   cutoff = 5.0
 
-  model_path = './checkpoints/fulvene_wigner_dist_200.pt'
-  geometry_path = 'C:/Users/rhjva/imperial/sharc_files/run00/config_200/geom.xyz'
-  example_orb_file = 'C:/Users/rhjva/imperial/sharc_files/run00/config_200/fulvene.Orb'
+  geometry_path = 'C:/Users/rhjva/imperial/sharc_files/run02/config_200/geom.xyz'
+  example_orb_file = 'C:/Users/rhjva/imperial/sharc_files/run02/config_200/fulvene.Orb'
 
-  dir = 'C:/Users/rhjva/imperial/molcas_files/wigner_dist_200/config_200/'
+  model_path = './checkpoints/fulvene_wigner_dist_200_02_painn.pt'
+  dir = 'C:/Users/rhjva/imperial/molcas_files/wigner_dist_200/config_200_02_painn/'
 
   if not os.path.exists(dir):
     os.makedirs(dir)

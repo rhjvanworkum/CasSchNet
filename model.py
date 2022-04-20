@@ -5,11 +5,17 @@ import src.schnetpack as spk
 def get_model(cutoff, n_coeffs, lr):
     # defining the NN
     pairwise_distance = spk.atomistic.PairwiseDistances()
-    representation = spk.representation.SchNet(
+    # representation = spk.representation.SchNet(
+    #     n_atom_basis=64,
+    #     n_interactions=5,
+    #     radial_basis=spk.nn.GaussianRBF(n_rbf=20, cutoff=cutoff),
+    #     cutoff_fn=spk.nn.CosineCutoff(cutoff),
+    # )
+    representation = spk.representation.PaiNN(
         n_atom_basis=64,
-        n_interactions=3,
+        n_interactions=5,
         radial_basis=spk.nn.GaussianRBF(n_rbf=20, cutoff=cutoff),
-        cutoff_fn=spk.nn.CosineCutoff(cutoff),
+        cutoff_fn=spk.nn.CosineCutoff(cutoff)
     )
     pred_module = spk.atomistic.Atomwise(
         output_key="orbital_coeffs",

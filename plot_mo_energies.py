@@ -30,7 +30,7 @@ def extract_mo_energies(file_path: str) -> np.ndarray:
   return np.array(mo_energies)
 
 if __name__ == "__main__":
-  dir = 'C:/Users/rhjva/imperial/molcas_files/wigner_dist_200/config_200_corrected/'
+  dir = 'C:/Users/rhjva/imperial/molcas_files/wigner_dist_200/config_200_02/'
 
   mo_energy_dict = {}
   for calc in calcs:

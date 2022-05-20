@@ -5,6 +5,7 @@ from ase.io.extxyz import read_xyz
 from tqdm import tqdm
 import tempfile
 import numpy as np
+import re
 
 def parse_property_string(prop_str):
     """
@@ -42,7 +43,7 @@ def xyz_to_extxyz(
             first_line = xyz_file.readline()
             if first_line == "":
                 break
-            n_atoms = int(first_line.strip("\n"))
+            n_atoms = int(re.findall(r'\d+', first_line)[0])
             _ = xyz_file.readline().strip("/n").split()
 
             comment = ''
@@ -51,10 +52,11 @@ def xyz_to_extxyz(
             for i in range(n_atoms):
                 line = xyz_file.readline()
                 new_file.writelines(line)
+            break
     new_file.close()
 
 
-def extxyz_to_db(extxyz_path, db_path, molecular_properties=[]):
+def extxyz_to_db(extxyz_path, db_path, idx, molecular_properties=[]):
     r"""
     Convertes en extxyz-file to an ase database
     Args:
@@ -67,11 +69,12 @@ def extxyz_to_db(extxyz_path, db_path, molecular_properties=[]):
                 data = {}
                 for property in molecular_properties:
                   data.update(property)
-                conn.write(at, data=data)
+                conn.write(at, data=data, idx=idx)
 
 def xyz_to_db(
     xyz_path,
     db_path,
+    idx,
     atomic_properties="Properties=species:S:1:pos:R:3",
     molecular_properties=[],
 ):
@@ -88,7 +91,7 @@ def xyz_to_db(
     extxyz_path = os.path.join(tempfile.mkdtemp(), "temp.extxyz")
     xyz_to_extxyz(xyz_path, extxyz_path, atomic_properties)
     # build database from extended xyz
-    extxyz_to_db(extxyz_path, db_path, molecular_properties)
+    extxyz_to_db(extxyz_path, db_path, idx, molecular_properties)
 
 
 def read_in_orb_file(orb_file : str) -> List[List[float]]:
@@ -118,6 +121,28 @@ def read_in_orb_file(orb_file : str) -> List[List[float]]:
 
   return orbitals
 
+def normalise_rows(mat):
+    '''Normalise each row of mat'''
+    return np.array(tuple(map(lambda v: v / np.linalg.norm(v), mat)))
+
+def flip(v):
+    '''Returns 1 if max(abs(v))) is positive, and -1 if negative'''
+    maxpos=np.argmax(abs(v))
+    return v[maxpos]/abs(v[maxpos])
+
+def order_orbitals(ref, target):
+    '''Reorder target molecular orbitals according to maximum overlap with ref.
+    Orbitals phases are also adjusted to match ref.'''
+    Moverlap=np.dot(normalise_rows(ref),normalise_rows(target).T)
+    orb_order=np.argmax(abs(Moverlap),axis=1)
+    target = target[orb_order]
+
+    for idx in range(target.shape[0]):
+        if np.dot(ref[idx], target[idx]) < 0:
+            target[idx] = -1 * target[idx]
+
+    return target
+
 def correct_phase(mo_array: np.ndarray) -> None:
   """
   mo_array -> List of coeffs for 1 MO among each calculation
@@ -128,7 +153,7 @@ def correct_phase(mo_array: np.ndarray) -> None:
     if np.dot(mo_array[idx], ref) < 0:
       mo_array[idx] = np.negative(mo_array[idx])
 
-def parse_molcas_rasscf_calculations(calculation_folders, db_path, correct_phases=False):
+def parse_molcas_rasscf_calculations(calculation_folders, db_path, reference_file, use_delta=False):
   xyz_files = []
   all_orbitals = []
 
@@ -138,6 +163,7 @@ def parse_molcas_rasscf_calculations(calculation_folders, db_path, correct_phase
     orb_file = None
     for _, _, files in os.walk(workdir):
       for file in files:
+        # print(file)
         if file.split('.')[-1] == 'xyz':
           xyz_files.append(file)
         elif file.split('.')[-1] == 'RasOrb':
@@ -148,19 +174,18 @@ def parse_molcas_rasscf_calculations(calculation_folders, db_path, correct_phase
     all_orbitals.append(orbitals)
 
   all_orbitals = np.array(all_orbitals)
+  ref = read_in_orb_file(reference_file)
+  for idx, orbitals in enumerate(all_orbitals):
+    all_orbitals[idx] = order_orbitals(ref, orbitals)
 
-  # apply phase correction
-  # for all 36 MO's:
-  # take MO from 1st calculation 
-  # for MO's in other calculations:
-  # calculate innerproduct with first one
-  # if this is negative flip every sign in the MO coeff vector
-  if correct_phases:
-    for mo_idx in range(all_orbitals.shape[1]):
-      correct_phase(all_orbitals[:, mo_idx, :])
+  # use a delta approach
+  if use_delta:
+    for idx in range(all_orbitals.shape[0]):
+      all_orbitals[idx] -= ref
 
   for idx, workdir in enumerate(calculation_folders):
     xyz_to_db(workdir + xyz_files[idx], 
-              db_path, 
+              db_path,
+              idx=idx, 
               atomic_properties="",
-              molecular_properties=[{'orbital_coeffs': [item for sublist in all_orbitals[idx] for item in sublist]}])
+              molecular_properties=[{'orbital_coeffs': all_orbitals[idx].flatten(), 'workdir': workdir}])

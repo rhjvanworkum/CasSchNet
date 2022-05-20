@@ -3,6 +3,7 @@
 	basis=ANO-S-MB
 	group=NoSym
 &SEWARD
+	NOGUessorb
 &RASSCF
 	fileorb=geom.Orb
 	spin=1

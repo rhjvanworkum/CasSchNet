@@ -1,0 +1,1200 @@
+calculation 0 
+RMSE of ML_coeffs: 1.8390449936658635 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8375531255198931 
+CASSCF iterations: 11 
+
+calculation 1 
+RMSE of ML_coeffs: 1.839164617598342 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.838357189153404 
+CASSCF iterations: 11 
+
+calculation 2 
+RMSE of ML_coeffs: 1.8390517482045248 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.838636088260083 
+CASSCF iterations: 11 
+
+calculation 3 
+RMSE of ML_coeffs: 1.8387135426457082 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8385369990656382 
+CASSCF iterations: 11 
+
+calculation 4 
+RMSE of ML_coeffs: 1.8383280667341306 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.838156221204659 
+CASSCF iterations: 12 
+
+calculation 5 
+RMSE of ML_coeffs: 1.8379315488351915 
+CASSCF_ML iterations: 9 
+RMSE of guess_coeffs: 1.8379935407536485 
+CASSCF iterations: 12 
+
+calculation 6 
+RMSE of ML_coeffs: 1.8374506876689851 
+CASSCF_ML iterations: 9 
+RMSE of guess_coeffs: 1.837561171496945 
+CASSCF iterations: 12 
+
+calculation 7 
+RMSE of ML_coeffs: 1.8370766836129626 
+CASSCF_ML iterations: 9 
+RMSE of guess_coeffs: 1.8371555267439974 
+CASSCF iterations: 9 
+
+calculation 8 
+RMSE of ML_coeffs: 1.8367029880915122 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8368782077528139 
+CASSCF iterations: 9 
+
+calculation 9 
+RMSE of ML_coeffs: 1.8372259729009164 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.836948092249325 
+CASSCF iterations: 9 
+
+calculation 10 
+RMSE of ML_coeffs: 1.8370534309159807 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8365597144537222 
+CASSCF iterations: 9 
+
+calculation 11 
+RMSE of ML_coeffs: 1.8372631219949023 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.836880403588479 
+CASSCF iterations: 9 
+
+calculation 12 
+RMSE of ML_coeffs: 1.8371900661206582 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8368142784043597 
+CASSCF iterations: 9 
+
+calculation 13 
+RMSE of ML_coeffs: 1.8369709705784583 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8364529998004184 
+CASSCF iterations: 9 
+
+calculation 14 
+RMSE of ML_coeffs: 1.8369056564409036 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8363581748992432 
+CASSCF iterations: 9 
+
+calculation 15 
+RMSE of ML_coeffs: 1.8370000972709353 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8364239958186968 
+CASSCF iterations: 9 
+
+calculation 16 
+RMSE of ML_coeffs: 1.8370224817925898 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8363983979208751 
+CASSCF iterations: 9 
+
+calculation 17 
+RMSE of ML_coeffs: 1.837104172316957 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8363966942806076 
+CASSCF iterations: 9 
+
+calculation 18 
+RMSE of ML_coeffs: 1.8373412980402426 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8365512609319143 
+CASSCF iterations: 9 
+
+calculation 19 
+RMSE of ML_coeffs: 1.8374214761446919 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8365912379467266 
+CASSCF iterations: 9 
+
+calculation 20 
+RMSE of ML_coeffs: 1.8373786164344306 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8367224988213762 
+CASSCF iterations: 10 
+
+calculation 21 
+RMSE of ML_coeffs: 1.8375625619196199 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8369111305366708 
+CASSCF iterations: 10 
+
+calculation 22 
+RMSE of ML_coeffs: 1.8376052949753565 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8369826710650103 
+CASSCF iterations: 10 
+
+calculation 23 
+RMSE of ML_coeffs: 1.837630293017966 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.837059474827408 
+CASSCF iterations: 10 
+
+calculation 24 
+RMSE of ML_coeffs: 1.8377905454598202 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8372821465983762 
+CASSCF iterations: 10 
+
+calculation 25 
+RMSE of ML_coeffs: 1.8377595182370252 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8373733950880848 
+CASSCF iterations: 10 
+
+calculation 26 
+RMSE of ML_coeffs: 1.8377225020651327 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8374665246850383 
+CASSCF iterations: 10 
+
+calculation 27 
+RMSE of ML_coeffs: 1.8382145529005507 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.837337464899841 
+CASSCF iterations: 10 
+
+calculation 28 
+RMSE of ML_coeffs: 1.8390563539139753 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8373279940235565 
+CASSCF iterations: 10 
+
+calculation 29 
+RMSE of ML_coeffs: 1.838802994104932 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8372485818856543 
+CASSCF iterations: 10 
+
+calculation 30 
+RMSE of ML_coeffs: 1.8385112123079128 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8371956706074086 
+CASSCF iterations: 10 
+
+calculation 31 
+RMSE of ML_coeffs: 1.8387366487066525 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8372764154334165 
+CASSCF iterations: 10 
+
+calculation 32 
+RMSE of ML_coeffs: 1.8385082974218045 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8372157236347901 
+CASSCF iterations: 10 
+
+calculation 33 
+RMSE of ML_coeffs: 1.8384099039321107 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8371719190516806 
+CASSCF iterations: 10 
+
+calculation 34 
+RMSE of ML_coeffs: 1.8385897513160363 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8372774845021609 
+CASSCF iterations: 10 
+
+calculation 35 
+RMSE of ML_coeffs: 1.8386229412072852 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8372393351485818 
+CASSCF iterations: 10 
+
+calculation 36 
+RMSE of ML_coeffs: 1.8386206374947047 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8372014831363848 
+CASSCF iterations: 10 
+
+calculation 37 
+RMSE of ML_coeffs: 1.8389026360767298 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8373006373091687 
+CASSCF iterations: 10 
+
+calculation 38 
+RMSE of ML_coeffs: 1.8389556927390158 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8372619841498132 
+CASSCF iterations: 10 
+
+calculation 39 
+RMSE of ML_coeffs: 1.8390687620702766 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8372144313221535 
+CASSCF iterations: 10 
+
+calculation 40 
+RMSE of ML_coeffs: 1.838542182141796 
+CASSCF_ML iterations: 11 
+RMSE of guess_coeffs: 1.8374430111871605 
+CASSCF iterations: 10 
+
+calculation 41 
+RMSE of ML_coeffs: 1.8385469002328367 
+CASSCF_ML iterations: 11 
+RMSE of guess_coeffs: 1.8373074752800702 
+CASSCF iterations: 10 
+
+calculation 42 
+RMSE of ML_coeffs: 1.8384691092019638 
+CASSCF_ML iterations: 11 
+RMSE of guess_coeffs: 1.8371772245611737 
+CASSCF iterations: 10 
+
+calculation 43 
+RMSE of ML_coeffs: 1.838563749156063 
+CASSCF_ML iterations: 11 
+RMSE of guess_coeffs: 1.8371783147998653 
+CASSCF iterations: 10 
+
+calculation 44 
+RMSE of ML_coeffs: 1.8383354097010278 
+CASSCF_ML iterations: 11 
+RMSE of guess_coeffs: 1.8370580555004064 
+CASSCF iterations: 10 
+
+calculation 45 
+RMSE of ML_coeffs: 1.8381730919399974 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8377050387774632 
+CASSCF iterations: 10 
+
+calculation 46 
+RMSE of ML_coeffs: 1.8401698384774041 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8376025109772227 
+CASSCF iterations: 10 
+
+calculation 47 
+RMSE of ML_coeffs: 1.8393213876348145 
+CASSCF_ML iterations: 14 
+RMSE of guess_coeffs: 1.837146420619914 
+CASSCF iterations: 10 
+
+calculation 48 
+RMSE of ML_coeffs: 1.838926253845032 
+CASSCF_ML iterations: 15 
+RMSE of guess_coeffs: 1.8369105302171225 
+CASSCF iterations: 10 
+
+calculation 49 
+RMSE of ML_coeffs: 1.8388828842536213 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.837214336741357 
+CASSCF iterations: 10 
+
+calculation 50 
+RMSE of ML_coeffs: 1.8383511930669532 
+CASSCF_ML iterations: 11 
+RMSE of guess_coeffs: 1.8369543709590217 
+CASSCF iterations: 10 
+
+calculation 51 
+RMSE of ML_coeffs: 1.8383540991131773 
+CASSCF_ML iterations: 11 
+RMSE of guess_coeffs: 1.8371599539153356 
+CASSCF iterations: 10 
+
+calculation 52 
+RMSE of ML_coeffs: 1.838316362569863 
+CASSCF_ML iterations: 11 
+RMSE of guess_coeffs: 1.8370935298958675 
+CASSCF iterations: 10 
+
+calculation 53 
+RMSE of ML_coeffs: 1.837750860347479 
+CASSCF_ML iterations: 11 
+RMSE of guess_coeffs: 1.8372250731136421 
+CASSCF iterations: 10 
+
+calculation 54 
+RMSE of ML_coeffs: 1.837673688049667 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8371401037493011 
+CASSCF iterations: 10 
+
+calculation 55 
+RMSE of ML_coeffs: 1.8375307460296704 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8370800426489475 
+CASSCF iterations: 10 
+
+calculation 56 
+RMSE of ML_coeffs: 1.8374419005226108 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.837201996747756 
+CASSCF iterations: 10 
+
+calculation 57 
+RMSE of ML_coeffs: 1.8373089995845608 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8371620168835847 
+CASSCF iterations: 10 
+
+calculation 58 
+RMSE of ML_coeffs: 1.837114345195877 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8371312226897372 
+CASSCF iterations: 10 
+
+calculation 59 
+RMSE of ML_coeffs: 1.8371159911580863 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8372608136817368 
+CASSCF iterations: 10 
+
+calculation 60 
+RMSE of ML_coeffs: 1.8370469185144302 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.837226654182349 
+CASSCF iterations: 10 
+
+calculation 61 
+RMSE of ML_coeffs: 1.836985739502887 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8372053233020986 
+CASSCF iterations: 10 
+
+calculation 62 
+RMSE of ML_coeffs: 1.8370602206759747 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.837356746259995 
+CASSCF iterations: 10 
+
+calculation 63 
+RMSE of ML_coeffs: 1.8371244334534558 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8373466266994527 
+CASSCF iterations: 10 
+
+calculation 64 
+RMSE of ML_coeffs: 1.837225410896745 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.8373926187692073 
+CASSCF iterations: 10 
+
+calculation 65 
+RMSE of ML_coeffs: 1.8374393997075056 
+CASSCF_ML iterations: 10 
+RMSE of guess_coeffs: 1.837489876343825 
+CASSCF iterations: 10 
+
+calculation 66 
+RMSE of ML_coeffs: 1.8376223258385072 
+CASSCF_ML iterations: 11 
+RMSE of guess_coeffs: 1.8374907676139582 
+CASSCF iterations: 10 
+
+calculation 67 
+RMSE of ML_coeffs: 1.8378309600347966 
+CASSCF_ML iterations: 11 
+RMSE of guess_coeffs: 1.8374900975307462 
+CASSCF iterations: 10 
+
+calculation 68 
+RMSE of ML_coeffs: 1.8381715366034277 
+CASSCF_ML iterations: 11 
+RMSE of guess_coeffs: 1.837658436860001 
+CASSCF iterations: 10 
+
+calculation 69 
+RMSE of ML_coeffs: 1.838486762029763 
+CASSCF_ML iterations: 11 
+RMSE of guess_coeffs: 1.8376711644486345 
+CASSCF iterations: 10 
+
+calculation 70 
+RMSE of ML_coeffs: 1.8387321047437943 
+CASSCF_ML iterations: 11 
+RMSE of guess_coeffs: 1.837665875647953 
+CASSCF iterations: 10 
+
+calculation 71 
+RMSE of ML_coeffs: 1.838904565196851 
+CASSCF_ML iterations: 11 
+RMSE of guess_coeffs: 1.8376550264953193 
+CASSCF iterations: 11 
+
+calculation 72 
+RMSE of ML_coeffs: 1.8393087174718201 
+CASSCF_ML iterations: 11 
+RMSE of guess_coeffs: 1.8378179969095363 
+CASSCF iterations: 11 
+
+calculation 73 
+RMSE of ML_coeffs: 1.8396470446670659 
+CASSCF_ML iterations: 14 
+RMSE of guess_coeffs: 1.83780636028601 
+CASSCF iterations: 11 
+
+calculation 74 
+RMSE of ML_coeffs: 1.8399722202875388 
+CASSCF_ML iterations: 14 
+RMSE of guess_coeffs: 1.8378004715628316 
+CASSCF iterations: 11 
+
+calculation 75 
+RMSE of ML_coeffs: 1.8403636048139858 
+CASSCF_ML iterations: 15 
+RMSE of guess_coeffs: 1.837974225014705 
+CASSCF iterations: 11 
+
+calculation 76 
+RMSE of ML_coeffs: 1.8406775159062085 
+CASSCF_ML iterations: 16 
+RMSE of guess_coeffs: 1.8379663186891226 
+CASSCF iterations: 11 
+
+calculation 77 
+RMSE of ML_coeffs: 1.8429683330292088 
+CASSCF_ML iterations: 16 
+RMSE of guess_coeffs: 1.8378831522915453 
+CASSCF iterations: 11 
+
+calculation 78 
+RMSE of ML_coeffs: 1.84331728941818 
+CASSCF_ML iterations: 17 
+RMSE of guess_coeffs: 1.8380305448593643 
+CASSCF iterations: 11 
+
+calculation 79 
+RMSE of ML_coeffs: 1.8435242579217952 
+CASSCF_ML iterations: 19 
+RMSE of guess_coeffs: 1.8380042812697013 
+CASSCF iterations: 11 
+
+calculation 80 
+RMSE of ML_coeffs: 1.8437520247864838 
+CASSCF_ML iterations: 20 
+RMSE of guess_coeffs: 1.8379732100649093 
+CASSCF iterations: 11 
+
+calculation 81 
+RMSE of ML_coeffs: 1.8391528545838347 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8379158149399992 
+CASSCF iterations: 11 
+
+calculation 82 
+RMSE of ML_coeffs: 1.8393202858858215 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8379164057280892 
+CASSCF iterations: 11 
+
+calculation 83 
+RMSE of ML_coeffs: 1.8398254003737964 
+CASSCF_ML iterations: 14 
+RMSE of guess_coeffs: 1.8382753126275406 
+CASSCF iterations: 11 
+
+calculation 84 
+RMSE of ML_coeffs: 1.8393797194492605 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8379387230752333 
+CASSCF iterations: 11 
+
+calculation 85 
+RMSE of ML_coeffs: 1.839363057914375 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8377958772762648 
+CASSCF iterations: 11 
+
+calculation 86 
+RMSE of ML_coeffs: 1.839408735915425 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8377753463911926 
+CASSCF iterations: 11 
+
+calculation 87 
+RMSE of ML_coeffs: 1.8394819043870694 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8379013188694067 
+CASSCF iterations: 11 
+
+calculation 88 
+RMSE of ML_coeffs: 1.8394716233317812 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8378632889791173 
+CASSCF iterations: 11 
+
+calculation 89 
+RMSE of ML_coeffs: 1.8394286008735066 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8378274484469723 
+CASSCF iterations: 11 
+
+calculation 90 
+RMSE of ML_coeffs: 1.839366075102618 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8377890280936513 
+CASSCF iterations: 11 
+
+calculation 91 
+RMSE of ML_coeffs: 1.8394041357048005 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8379566790687916 
+CASSCF iterations: 11 
+
+calculation 92 
+RMSE of ML_coeffs: 1.839283548520622 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8379112151321149 
+CASSCF iterations: 11 
+
+calculation 93 
+RMSE of ML_coeffs: 1.8392097303217851 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8378915292816123 
+CASSCF iterations: 11 
+
+calculation 94 
+RMSE of ML_coeffs: 1.839190442846224 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8380342952594697 
+CASSCF iterations: 11 
+
+calculation 95 
+RMSE of ML_coeffs: 1.839037471793267 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8380208525202235 
+CASSCF iterations: 11 
+
+calculation 96 
+RMSE of ML_coeffs: 1.8389496004825383 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8379862835016663 
+CASSCF iterations: 11 
+
+calculation 97 
+RMSE of ML_coeffs: 1.8388923195418168 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8381695633928041 
+CASSCF iterations: 11 
+
+calculation 98 
+RMSE of ML_coeffs: 1.8387903010796276 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.83814887978204 
+CASSCF iterations: 11 
+
+calculation 99 
+RMSE of ML_coeffs: 1.8386739040946352 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.838145694874153 
+CASSCF iterations: 11 
+
+calculation 100 
+RMSE of ML_coeffs: 1.8386251047434465 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8382581309623653 
+CASSCF iterations: 11 
+
+calculation 101 
+RMSE of ML_coeffs: 1.8385374340378233 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8382571808357095 
+CASSCF iterations: 11 
+
+calculation 102 
+RMSE of ML_coeffs: 1.8384499991262557 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8382431576908311 
+CASSCF iterations: 11 
+
+calculation 103 
+RMSE of ML_coeffs: 1.8384343864678319 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8384439624799982 
+CASSCF iterations: 11 
+
+calculation 104 
+RMSE of ML_coeffs: 1.8384114454954947 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8384276788441918 
+CASSCF iterations: 11 
+
+calculation 105 
+RMSE of ML_coeffs: 1.838382223620655 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8384429321139824 
+CASSCF iterations: 11 
+
+calculation 106 
+RMSE of ML_coeffs: 1.8387789114048931 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8384927279742962 
+CASSCF iterations: 12 
+
+calculation 107 
+RMSE of ML_coeffs: 1.838754871193249 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8385048440018708 
+CASSCF iterations: 12 
+
+calculation 108 
+RMSE of ML_coeffs: 1.8387945684595928 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8384884185152632 
+CASSCF iterations: 12 
+
+calculation 109 
+RMSE of ML_coeffs: 1.83885875566972 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.838696707233263 
+CASSCF iterations: 12 
+
+calculation 110 
+RMSE of ML_coeffs: 1.8388487043010588 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8387065467029213 
+CASSCF iterations: 12 
+
+calculation 111 
+RMSE of ML_coeffs: 1.838952129509974 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8387247998681036 
+CASSCF iterations: 12 
+
+calculation 112 
+RMSE of ML_coeffs: 1.8391303703957738 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8386380326669338 
+CASSCF iterations: 12 
+
+calculation 113 
+RMSE of ML_coeffs: 1.8389877516632225 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8387871009353158 
+CASSCF iterations: 12 
+
+calculation 114 
+RMSE of ML_coeffs: 1.8387555014574088 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.838797675123731 
+CASSCF iterations: 12 
+
+calculation 115 
+RMSE of ML_coeffs: 1.838609554864257 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.838830586963905 
+CASSCF iterations: 12 
+
+calculation 116 
+RMSE of ML_coeffs: 1.8384697938725285 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8390489965963137 
+CASSCF iterations: 12 
+
+calculation 117 
+RMSE of ML_coeffs: 1.8397277615210097 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.838623053189447 
+CASSCF iterations: 12 
+
+calculation 118 
+RMSE of ML_coeffs: 1.8395596696114713 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8388055961520997 
+CASSCF iterations: 12 
+
+calculation 119 
+RMSE of ML_coeffs: 1.840377454881661 
+CASSCF_ML iterations: 14 
+RMSE of guess_coeffs: 1.8389186147269623 
+CASSCF iterations: 12 
+
+calculation 120 
+RMSE of ML_coeffs: 1.8400036657991539 
+CASSCF_ML iterations: 15 
+RMSE of guess_coeffs: 1.8387076193599319 
+CASSCF iterations: 12 
+
+calculation 121 
+RMSE of ML_coeffs: 1.839846807868823 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8386252456223149 
+CASSCF iterations: 12 
+
+calculation 122 
+RMSE of ML_coeffs: 1.8397031145502705 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8387484962108085 
+CASSCF iterations: 12 
+
+calculation 123 
+RMSE of ML_coeffs: 1.8396394623839913 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.838711157971844 
+CASSCF iterations: 12 
+
+calculation 124 
+RMSE of ML_coeffs: 1.839468423943243 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8386789397433014 
+CASSCF iterations: 12 
+
+calculation 125 
+RMSE of ML_coeffs: 1.8393946518334443 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.838819134615218 
+CASSCF iterations: 12 
+
+calculation 126 
+RMSE of ML_coeffs: 1.8392478322100505 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8387914530194878 
+CASSCF iterations: 12 
+
+calculation 127 
+RMSE of ML_coeffs: 1.839132402917988 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8387432998113358 
+CASSCF iterations: 12 
+
+calculation 128 
+RMSE of ML_coeffs: 1.839016395291425 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8388675669375527 
+CASSCF iterations: 12 
+
+calculation 129 
+RMSE of ML_coeffs: 1.839690947590623 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8386722642857762 
+CASSCF iterations: 12 
+
+calculation 130 
+RMSE of ML_coeffs: 1.839479509349761 
+CASSCF_ML iterations: 14 
+RMSE of guess_coeffs: 1.8386533882946974 
+CASSCF iterations: 12 
+
+calculation 131 
+RMSE of ML_coeffs: 1.839763250530005 
+CASSCF_ML iterations: 14 
+RMSE of guess_coeffs: 1.8390195940247265 
+CASSCF iterations: 12 
+
+calculation 132 
+RMSE of ML_coeffs: 1.8393124819449327 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8388515965166843 
+CASSCF iterations: 12 
+
+calculation 133 
+RMSE of ML_coeffs: 1.839100103413747 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8387550751925077 
+CASSCF iterations: 12 
+
+calculation 134 
+RMSE of ML_coeffs: 1.8390358835235416 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8386792062574084 
+CASSCF iterations: 12 
+
+calculation 135 
+RMSE of ML_coeffs: 1.8389418432298685 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.838759162357671 
+CASSCF iterations: 12 
+
+calculation 136 
+RMSE of ML_coeffs: 1.8387811357710404 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8387057934809978 
+CASSCF iterations: 12 
+
+calculation 137 
+RMSE of ML_coeffs: 1.838701723331863 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8386481776907728 
+CASSCF iterations: 12 
+
+calculation 138 
+RMSE of ML_coeffs: 1.8386674395752385 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8387399549972148 
+CASSCF iterations: 12 
+
+calculation 139 
+RMSE of ML_coeffs: 1.839292797304888 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8388998447102907 
+CASSCF iterations: 12 
+
+calculation 140 
+RMSE of ML_coeffs: 1.8392429976776556 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8388221175637833 
+CASSCF iterations: 12 
+
+calculation 141 
+RMSE of ML_coeffs: 1.839291203150996 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8389067701959365 
+CASSCF iterations: 12 
+
+calculation 142 
+RMSE of ML_coeffs: 1.8393725058140675 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8388443803881624 
+CASSCF iterations: 12 
+
+calculation 143 
+RMSE of ML_coeffs: 1.8394902595237035 
+CASSCF_ML iterations: 14 
+RMSE of guess_coeffs: 1.8387919982874263 
+CASSCF iterations: 12 
+
+calculation 144 
+RMSE of ML_coeffs: 1.8390367298445673 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8391537485521647 
+CASSCF iterations: 12 
+
+calculation 145 
+RMSE of ML_coeffs: 1.8393961446467573 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8381593484065177 
+CASSCF iterations: 12 
+
+calculation 146 
+RMSE of ML_coeffs: 1.839511515948179 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8390470012610691 
+CASSCF iterations: 12 
+
+calculation 147 
+RMSE of ML_coeffs: 1.8396267307235254 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8388590234508475 
+CASSCF iterations: 12 
+
+calculation 148 
+RMSE of ML_coeffs: 1.8398848683230407 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8387399126536295 
+CASSCF iterations: 12 
+
+calculation 149 
+RMSE of ML_coeffs: 1.8395307751275425 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8388363634575147 
+CASSCF iterations: 12 
+
+calculation 150 
+RMSE of ML_coeffs: 1.839606977466287 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8387024506710374 
+CASSCF iterations: 12 
+
+calculation 151 
+RMSE of ML_coeffs: 1.8396601151834828 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8390274180646295 
+CASSCF iterations: 12 
+
+calculation 152 
+RMSE of ML_coeffs: 1.8395788826135595 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8388402430808666 
+CASSCF iterations: 12 
+
+calculation 153 
+RMSE of ML_coeffs: 1.8394792011022292 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.838657301567483 
+CASSCF iterations: 12 
+
+calculation 154 
+RMSE of ML_coeffs: 1.8393585735349463 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8386738251836692 
+CASSCF iterations: 12 
+
+calculation 155 
+RMSE of ML_coeffs: 1.8394509104160273 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.83893743829635 
+CASSCF iterations: 12 
+
+calculation 156 
+RMSE of ML_coeffs: 1.8395228338274603 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8387596504310684 
+CASSCF iterations: 12 
+
+calculation 157 
+RMSE of ML_coeffs: 1.8396184509117612 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8387557520005127 
+CASSCF iterations: 12 
+
+calculation 158 
+RMSE of ML_coeffs: 1.8396103727384168 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8386678775513738 
+CASSCF iterations: 12 
+
+calculation 159 
+RMSE of ML_coeffs: 1.839627419032467 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8386135481928454 
+CASSCF iterations: 12 
+
+calculation 160 
+RMSE of ML_coeffs: 1.8396193623488328 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.838749942177902 
+CASSCF iterations: 12 
+
+calculation 161 
+RMSE of ML_coeffs: 1.83959667922191 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8388683671805837 
+CASSCF iterations: 12 
+
+calculation 162 
+RMSE of ML_coeffs: 1.8395649829512872 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.838775183603766 
+CASSCF iterations: 12 
+
+calculation 163 
+RMSE of ML_coeffs: 1.8395769900820913 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8387829076174327 
+CASSCF iterations: 12 
+
+calculation 164 
+RMSE of ML_coeffs: 1.8396214945429143 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8387648454047139 
+CASSCF iterations: 12 
+
+calculation 165 
+RMSE of ML_coeffs: 1.8397912780300834 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8387655622348222 
+CASSCF iterations: 12 
+
+calculation 166 
+RMSE of ML_coeffs: 1.8395355209591422 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.838832093949652 
+CASSCF iterations: 12 
+
+calculation 167 
+RMSE of ML_coeffs: 1.8394359860844303 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8388376048258879 
+CASSCF iterations: 12 
+
+calculation 168 
+RMSE of ML_coeffs: 1.8393885967309265 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8388236633828798 
+CASSCF iterations: 12 
+
+calculation 169 
+RMSE of ML_coeffs: 1.839589924001673 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8390068972844957 
+CASSCF iterations: 12 
+
+calculation 170 
+RMSE of ML_coeffs: 1.8394837963078685 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.839506843741615 
+CASSCF iterations: 13 
+
+calculation 171 
+RMSE of ML_coeffs: 1.8395957107213903 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8394836852018628 
+CASSCF iterations: 13 
+
+calculation 172 
+RMSE of ML_coeffs: 1.8394309836838532 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8395104090885601 
+CASSCF iterations: 13 
+
+calculation 173 
+RMSE of ML_coeffs: 1.8394642561831522 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.839606658790737 
+CASSCF iterations: 13 
+
+calculation 174 
+RMSE of ML_coeffs: 1.8395174428162488 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8395718627477076 
+CASSCF iterations: 13 
+
+calculation 175 
+RMSE of ML_coeffs: 1.8395400737991099 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8395299512963526 
+CASSCF iterations: 13 
+
+calculation 176 
+RMSE of ML_coeffs: 1.8395917461975484 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8395924982538518 
+CASSCF iterations: 13 
+
+calculation 177 
+RMSE of ML_coeffs: 1.8396373965123805 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8395493416286488 
+CASSCF iterations: 13 
+
+calculation 178 
+RMSE of ML_coeffs: 1.8397045874045117 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8394934994861278 
+CASSCF iterations: 13 
+
+calculation 179 
+RMSE of ML_coeffs: 1.8395165110800409 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.839538457489055 
+CASSCF iterations: 13 
+
+calculation 180 
+RMSE of ML_coeffs: 1.8396153119521088 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8395179712930547 
+CASSCF iterations: 13 
+
+calculation 181 
+RMSE of ML_coeffs: 1.8397532180605844 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8395347101813884 
+CASSCF iterations: 13 
+
+calculation 182 
+RMSE of ML_coeffs: 1.8398848288925667 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.839709317727097 
+CASSCF iterations: 13 
+
+calculation 183 
+RMSE of ML_coeffs: 1.8390723542270493 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8394795501649237 
+CASSCF iterations: 13 
+
+calculation 184 
+RMSE of ML_coeffs: 1.839186488854448 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8394110538922444 
+CASSCF iterations: 13 
+
+calculation 185 
+RMSE of ML_coeffs: 1.839519721866211 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8395514587051456 
+CASSCF iterations: 13 
+
+calculation 186 
+RMSE of ML_coeffs: 1.8398986664486938 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.839649191844699 
+CASSCF iterations: 13 
+
+calculation 187 
+RMSE of ML_coeffs: 1.8397259443764957 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.8395241849664539 
+CASSCF iterations: 13 
+
+calculation 188 
+RMSE of ML_coeffs: 1.8396275415309387 
+CASSCF_ML iterations: 13 
+RMSE of guess_coeffs: 1.839620044950602 
+CASSCF iterations: 13 
+
+calculation 189 
+RMSE of ML_coeffs: 1.8400490628328352 
+CASSCF_ML iterations: 14 
+RMSE of guess_coeffs: 1.839564749512662 
+CASSCF iterations: 13 
+
+calculation 190 
+RMSE of ML_coeffs: 1.8385079369485928 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8396470664764113 
+CASSCF iterations: 13 
+
+calculation 191 
+RMSE of ML_coeffs: 1.8391473820053121 
+CASSCF_ML iterations: 12 
+RMSE of guess_coeffs: 1.8402947091553343 
+CASSCF iterations: 14 
+
+calculation 192 
+RMSE of ML_coeffs: 1.840274823527222 
+CASSCF_ML iterations: 14 
+RMSE of guess_coeffs: 1.8402702269687088 
+CASSCF iterations: 14 
+
+calculation 193 
+RMSE of ML_coeffs: 1.8403642110637595 
+CASSCF_ML iterations: 14 
+RMSE of guess_coeffs: 1.8403188827695185 
+CASSCF iterations: 14 
+
+calculation 194 
+RMSE of ML_coeffs: 1.840296137055484 
+CASSCF_ML iterations: 14 
+RMSE of guess_coeffs: 1.840372916615167 
+CASSCF iterations: 14 
+
+calculation 195 
+RMSE of ML_coeffs: 1.8402897841146626 
+CASSCF_ML iterations: 14 
+RMSE of guess_coeffs: 1.840400178081592 
+CASSCF iterations: 14 
+
+calculation 196 
+RMSE of ML_coeffs: 1.8404060406040117 
+CASSCF_ML iterations: 14 
+RMSE of guess_coeffs: 1.8403484104570305 
+CASSCF iterations: 14 
+
+calculation 197 
+RMSE of ML_coeffs: 1.8401432351835478 
+CASSCF_ML iterations: 14 
+RMSE of guess_coeffs: 1.8401392674114792 
+CASSCF iterations: 14 
+
+calculation 198 
+RMSE of ML_coeffs: 1.8405356213383608 
+CASSCF_ML iterations: 14 
+RMSE of guess_coeffs: 1.8402937776061496 
+CASSCF iterations: 14 
+
+calculation 199 
+RMSE of ML_coeffs: 1.8418060281284443 
+CASSCF_ML iterations: 16 
+RMSE of guess_coeffs: 1.840432919700001 
+CASSCF iterations: 14 
+

@@ -2,15 +2,18 @@ import logging
 
 import pytorch_lightning
 from pytorch_lightning.loggers import WandbLogger
+from sklearn.metrics import log_loss
 
 import src.schnetpack as spk
 import schnetpack.transform as trn
 from model import get_model
 
-model_name = 'fulvene_wigner_dist_200_02_painn'
+model_name = 'fulvene_scan_2_mse'
+database = './data/fulvene_scan_2.db'
+split_file = './data/fulvene_scan_140.npz'
 
 cutoff = 5.0
-n_coeffs = 1296
+n_coeffs = 36 * 36
 
 epochs = 100
 batch_size = 16
@@ -18,10 +21,9 @@ lr = 5e-4
 
 """ Initializing a dataset """
 dataset = spk.data.AtomsDataModule(
-  datapath='./data/fulvene_wigner_dist_200_02.db',
+  datapath=database,
   batch_size=batch_size,
-  num_train=0.8,
-  num_val=0.2,
+  split_file=split_file,
   transforms=[
     trn.ASENeighborList(cutoff=5.),
     trn.CastTo32()
@@ -33,6 +35,15 @@ dataset = spk.data.AtomsDataModule(
 )
 
 model = get_model(cutoff, n_coeffs, lr)
+
+""" Just for testing purposes """
+# dataset.setup()
+# for idx, sample in enumerate(dataset.train_dataloader()):
+#   # output = model(sample)
+#   loss = model.training_step(sample, 0)
+#   print(loss)
+#   break
+
 
 # callbacks for PyTroch Lightning Trainer
 logging.info("Setup trainer")
@@ -46,13 +57,16 @@ callbacks = [
         filename="{epoch:02d}",
         inference_path="./checkpoints/" + model_name + ".pt"
     ),
-    pytorch_lightning.callbacks.EarlyStopping(
-        monitor="val_loss", patience=150, mode="min", min_delta=0.0
-    ),
+    # spk.train.ReduceLROnPlateau(
+    #   mode="min"
+    # ),
+    # pytorch_lightning.callbacks.EarlyStopping(
+    #     monitor="val_loss", patience=150, mode="min", min_delta=0.0
+    # ),
     pytorch_lightning.callbacks.LearningRateMonitor(logging_interval="epoch"),
 ]
 
-logger = WandbLogger(project="schnet-sa-orbitals")
+logger = WandbLogger(project="schnet-sa-orbitals-2")
 trainer = pytorch_lightning.Trainer(callbacks=callbacks, 
                                     logger=logger,
                                     default_root_dir='./test/',

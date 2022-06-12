@@ -22,7 +22,7 @@ def hf_calculation(geom_file, initial_guess=None):
     occ = np.zeros(36)
     occ[:21] = 2
     dm1 = myhf.make_rdm1(mo_coeff=initial_guess, mo_occ=occ)
-    guess = initial_guess
+    guess = dm1
 
     tstart = time.time()
     imacro, mo_coeffs = myhf.kernel(dm0=dm1)
@@ -36,16 +36,17 @@ def hf_calculation(geom_file, initial_guess=None):
 
   print(imacro)
 
-  return t_tot, imacro, mo_coeffs, guess, S
+  dm_final = myhf.make_rdm1()
+  return t_tot, imacro, dm_final, guess, S
 
 if __name__ == "__main__":
-  model_path = '../../checkpoints/geom_scan_200_mo_coeffs_mse.pt'
+  model_path = '../../checkpoints/geom_scan_200_hamiltonian_moe.pt'
   n_mo = 36
   cutoff = 5.0
 
   base_dir = '/mnt/c/users/rhjva/imperial/fulvene/geometries/geom_scan_200/'
   split_file = '../../data/geom_scan_200.npz'
-  output_dir = '/mnt/c/users/rhjva/imperial/fulvene/hf_calculations/experiments/geom_scan_200_mo_coeffs_mse/'
+  output_dir = '/mnt/c/users/rhjva/imperial/fulvene/hf_calculations/experiments/geom_scan_200_hamiltonian_moe/'
 
   if not os.path.exists(output_dir):
     os.makedirs(output_dir)
@@ -55,23 +56,23 @@ if __name__ == "__main__":
     geom_file = base_dir + 'geometry_' + str(index) + '.xyz'
 
     """ HF GUESS """
-    (t_tot, imacro, mo_coeffs, guess, S) = hf_calculation(geom_file=geom_file)
+    (t_tot, imacro, dm_final, guess, S) = hf_calculation(geom_file=geom_file)
     # save converged MO's
     np.savez(output_dir + 'geometry_' + str(index) + '.npz',
              t_tot=t_tot,
              imacro=imacro,
-             mo_coeffs=mo_coeffs,
+             dm_final=dm_final,
              guess=guess,
              S=S)
 
     
     """ ML GUESS """
-    guess = predict_guess(model_path=model_path, geometry_path=geom_file)
-    (t_tot, imacro, mo_coeffs, guess, S) = hf_calculation(geom_file, initial_guess=guess)
+    initial_guess = predict_guess_F(model_path=model_path, geometry_path=geom_file)
+    (t_tot, imacro, dm_final, guess, S) = hf_calculation(geom_file, initial_guess=initial_guess)
     # save converged MO's
     np.savez(output_dir + 'geometry_' + str(index) + '_ML.npz',
              t_tot=t_tot,
              imacro=imacro,
-             mo_coeffs=mo_coeffs,
+             dm_final=dm_final,
              guess=guess,
              S=S)    

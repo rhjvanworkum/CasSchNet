@@ -93,6 +93,7 @@ def predict_guess_F(model_path, geometry_path, cutoff=5.0):
   output = model(input)
   values = output['F'].detach().cpu().numpy()[0]
   F = values.reshape(36, 36)
+  F = 0.5 * (F + F.T)
 
   # creating mol
   mol = gto.M(atom=geometry_path,

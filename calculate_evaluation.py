@@ -5,8 +5,9 @@ import seaborn as sn
 import math
 import os
 from ase.db import connect
+from rmse import rmse
 
-from src.schnetpack.data.parser import order_orbitals, read_in_orb_file, correct_phase
+from src.schnetpack.data.parser import get_orbital_occupations, order_orbitals, read_in_orb_file, correct_phase
 
 
 class MolcasResults:
@@ -25,6 +26,8 @@ class ExperimentResults:
     ml_converged_coeffs: np.ndarray,
     guess_orb_coeffs: np.ndarray,
     converged_coeffs: np.ndarray,
+    occupations: np.ndarray,
+    h5,
     converged_s1_energy: float = None):
       self.index = index
       self.casci_result = casci_result
@@ -34,6 +37,8 @@ class ExperimentResults:
       self.ml_converged_coeffs = ml_converged_coeffs
       self.guess_orb_coeffs = guess_orb_coeffs
       self.converged_coeffs = converged_coeffs
+      self.occupations = occupations
+      self.h5 = h5
       self.converged_s1_energy = converged_s1_energy
 
 def read_log_file(file, read_iterations=True):
@@ -83,51 +88,6 @@ def correct_orbitals(results : List[ExperimentResults], ref_file):
   for idx, result in enumerate(results):
     results[idx].converged_coeffs = order_orbitals(ref, result.converged_coeffs)
 
-def rmse(orbs1, orbs2):
-  # return np.linalg.norm(orbs1 - orbs2)
-
-  """ Magnitude weighted MSE """
-  se = (orbs2.flatten() - orbs1.flatten()) ** 2
-  wse = se / np.abs(orbs2.flatten())
-  return np.sum(wse) / (36 ** 2)
-
-  """ MSE """
-  # return np.sum((orbs2.flatten() - orbs1.flatten()) ** 2) / len(orbs2.flatten())
-
-  """ GAuSSIAN WEIGHTED AROUND ACTIVE SPACE"""
-  # def gauss(x, x0, sigma):
-  #   return 1000 * np.exp(-(x - x0) ** 2 / (2 * sigma ** 2))
-  # x = np.linspace(0, 1296, 1296)
-
-  # return np.sum(np.multiply((orbs2.flatten() - orbs1.flatten()) ** 2, gauss(x, 774, 100))) / len(orbs2.flatten())
-  
-  # errors = (orbs2.flatten() - orbs1.flatten()) ** 2
-  # errors = errors[:(20 * 36)]
-  # top_n = 3
-  # top_ind = np.argpartition(errors, -top_n)[-top_n:]
-  # return np.sum(errors[top_ind])
-
-  # error = 0
-  # weights = np.cos(np.linspace(0, 0.5 * np.pi, 36))
-  # weights[20:] = 0
-  # for i in range(36):
-  #   for j in range(36):
-  #     error += (orbs2[i][j] - orbs1[i][j]) ** 2 * weights[i]
-  # return error / (36 ** 2)
-
-  # error = 0
-  # weights = np.load('weights.npy')
-  # for i in range(36 ** 2):
-  #   error += (orbs2.flatten()[i] - orbs1.flatten()[i]) ** 2 * weights[i]
-  # return error / len(np.where(weights > 0)[0])
-
-  # error = 0
-  # weights = np.load('weights_abs.npy')
-  # for i in range(36 ** 2):
-  #   error += np.abs(orbs2.flatten()[i] - orbs1.flatten()[i]) * weights[i]
-  # return error / len(np.where(weights > 0)[0])
-
-
 def print_out_results(results: List[ExperimentResults]):
   print(f'CASCI_ML  ===> WallTime: {round(np.mean([result.casci_result.wall_timing for result in results]), 2)} +/- {round(np.std([result.casci_result.wall_timing for result in results]), 2)}' +
                       f' RASSCF-Time: {round(np.mean([result.casci_result.rasscf_timing for result in results]), 2)} +/- {round(np.std([result.casci_result.rasscf_timing for result in results]), 2)} \n')
@@ -138,8 +98,8 @@ def print_out_results(results: List[ExperimentResults]):
                       f' RASSCF-Time: {round(np.mean([result.casscf_result.rasscf_timing for result in results]), 2)} +/- {round(np.std([result.casscf_result.rasscf_timing for result in results]), 2)}' +
                       f' Iterations: {round(np.mean([result.casscf_result.n_iterations for result in results]), 2)} +/- {round(np.std([result.casscf_result.n_iterations for result in results]), 2)} \n')
 
-  print(f'MSE of    ML_coeffs & converged_coeffs: {round(np.mean([rmse(result.ml_orb_coeffs, result.converged_coeffs) for result in results]), 4)} +/- {round(np.std([rmse(result.ml_orb_coeffs, result.converged_coeffs) for result in results]), 4)}')
-  print(f'MSE of guess_coeffs & converged_coeffs: {round(np.mean([rmse(result.guess_orb_coeffs, result.converged_coeffs) for result in results]), 4)} +/- {round(np.std([rmse(result.guess_orb_coeffs, result.converged_coeffs) for result in results]), 4)}')
+  print(f'MSE of    ML_coeffs & converged_coeffs: {round(np.mean([rmse(result, ML=True) for result in results]), 4)} +/- {round(np.std([rmse(result, ML=True) for result in results]), 4)}')
+  print(f'MSE of guess_coeffs & converged_coeffs: {round(np.mean([rmse(result) for result in results]), 4)} +/- {round(np.std([rmse(result) for result in results]), 4)}')
 
 
 def log_all_results(results: List[ExperimentResults]):
@@ -147,10 +107,10 @@ def log_all_results(results: List[ExperimentResults]):
 
   for idx, result in enumerate(results):
     string += f"calculation {result.index} \n"
-    string += f"RMSE of ML_coeffs: {rmse(result.ml_orb_coeffs, result.converged_coeffs)} \n" 
+    string += f"RMSE of ML_coeffs: {rmse(result, ML=True)} \n" 
     string += f"CASSCF_ML iterations: {result.casscf_ml_result.n_iterations} \n" 
     string += f"CASSCF_ML WallTime: {result.casscf_ml_result.wall_timing} \n" 
-    string += f"RMSE of guess_coeffs: {rmse(result.guess_orb_coeffs, result.converged_coeffs)} \n" 
+    string += f"RMSE of guess_coeffs: {rmse(result)} \n" 
     string += f"CASSCF iterations: {result.casscf_result.n_iterations} \n" 
     string += f"CASSCF WallTime: {result.casscf_result.wall_timing} \n" 
     string += "\n"
@@ -159,8 +119,8 @@ def log_all_results(results: List[ExperimentResults]):
 
 
 def plot_rsme_calculations(results: List[ExperimentResults]):
-  ML_rmse = [rmse(result.ml_orb_coeffs, result.converged_coeffs) for result in results]
-  guess_rmse = [rmse(result.guess_orb_coeffs, result.converged_coeffs) for result in results]
+  ML_rmse = [rmse(result, ML=True) for result in results]
+  guess_rmse = [rmse(result) for result in results]
 
   plt.scatter(np.arange(len(ML_rmse)), ML_rmse, label="ML guess")
   plt.scatter(np.arange(len(guess_rmse)), guess_rmse, label="Guess")
@@ -171,21 +131,41 @@ def plot_rsme_calculations(results: List[ExperimentResults]):
   plt.show()
 
 def plot_rmse_timing(results: List[ExperimentResults]):
-  ML_rmse = [rmse(result.ml_orb_coeffs, result.converged_coeffs) for result in results]
+  ML_rmse = [rmse(result, ML=True) for result in results]
   wall_timings = [result.casscf_ml_result.n_iterations for result in results]
 
   p = sn.regplot(x=ML_rmse, y=wall_timings)
-  plt.xlabel("MSE of ML guess & CASSCF converged coeffs")
+  plt.xlabel("Projection of ML guess & CASSCF converged coeffs")
   plt.ylabel("N iterations of CASSCF_ML method")
-  plt.title('N iterations vs. MSE')
+  plt.title('N iterations vs. Projection')
+  plt.show()
+
+  ML_rmse = [rmse(result) for result in results]
+  wall_timings = [result.casscf_result.n_iterations for result in results]
+
+  p = sn.regplot(x=ML_rmse, y=wall_timings)
+  plt.xlabel("Projection of guess & CASSCF converged coeffs")
+  plt.ylabel("N iterations of CASSCF method")
+  plt.title('N iterations vs. Projection')
+  plt.show()
+
+  ML_rmse = [rmse(result, ML=True) for result in results]
+  wall_timings = [result.casscf_result.n_iterations - result.casscf_ml_result.n_iterations for result in results]
+
+  p = sn.regplot(x=ML_rmse, y=wall_timings)
+  plt.xlabel("Projection of ML guess & CASSCF converged coeffs")
+  plt.ylabel("Speed up in Iterations by ML guess")
+  plt.title('N iterations vs. Error Measure')
   plt.show()
 
 if __name__ == "__main__":
   """ Evaluate Model output """
   split_file = './data/fulvene_MB_140.npz'
-  ref_file = 'C:/users/rhjva/imperial/molcas_files/fulvene_scan_2/geometry_0/CASSCF/CASSCF.RasOrb'
-  output_dir = 'C:/Users/rhjva/imperial/molcas_files/fulvene_scan_2_experiment0_mse/'
+  # ref_file = 'C:/users/rhjva/imperial/molcas_files/fulvene_scan_2/geometry_0/CASSCF/CASSCF.RasOrb'
+  output_dir = 'C:/Users/rhjva/imperial/molcas_files/fulvene_scan_molcas_nocorr/'
   indices = np.load(split_file)['test_idx']
+
+  import h5py
 
   results = []
   for i, index in enumerate(indices):
@@ -198,21 +178,41 @@ if __name__ == "__main__":
         ml_orb_coeffs=get_orbital_coeffs(output_dir + 'geometry_' + str(index) + '/CASSCF_ML/geom.orb'),
         ml_converged_coeffs=get_orbital_coeffs(output_dir + 'geometry_' + str(index) + '/CASSCF_ML/CASSCF_ML.RasOrb'),
         guess_orb_coeffs=get_orbital_coeffs(output_dir + 'geometry_' + str(index) + '/CASSCF/geom.orb'),
-        converged_coeffs=get_orbital_coeffs(output_dir + 'geometry_' + str(index) + '/CASSCF/CASSCF.RasOrb')
+        converged_coeffs=get_orbital_coeffs(output_dir + 'geometry_' + str(index) + '/CASSCF/CASSCF.RasOrb'),
+        occupations=get_orbital_occupations(output_dir + 'geometry_' + str(index) + '/CASSCF/CASSCF.RasOrb'),
+        h5=h5py.File(output_dir + 'geometry_' + str(index) + '/CASSCF/CASSCF.rasscf.h5')
       )
     )
     print('Progress: ', i / len(indices) * 100, '%')
 
   # sort the results
   results = sorted(results, key=lambda x: x.index)
-  correct_orbitals(results, ref_file)
+  # correct_orbitals(results, ref_file)
 
-  with open('output.txt', 'w') as f:
-    f.writelines(log_all_results(results))
+  for result in results:
+    print(result.casscf_ml_result.n_iterations, result.casscf_result.n_iterations)
+    # print(np.mean([np.linalg.norm(result.converged_coeffs[i, :]) for i in range(36)]) - np.mean([np.linalg.norm(result.ml_orb_coeffs[i, :]) for i in range(36)]))
+    # print(np.mean([np.linalg.norm(result.converged_coeffs[i, :]) for i in range(36)]) - np.mean([np.linalg.norm(result.guess_orb_coeffs[i, :]) for i in range(36)]))
+    # print(np.mean([np.linalg.norm(result.converged_coeffs[i, :]) for i in range(36)]))
+    print(rmse(result, ML=True), rmse(result, ML=False))
+    print('\n')
 
-  print_out_results(results)
-  plot_rsme_calculations(results)
-  plot_rmse_timing(results)
+
+
+  # with open('output.txt', 'w') as f:
+  #   f.writelines(log_all_results(results))
+
+  # print_out_results(results)
+  # plot_rsme_calculations(results)
+  # plot_rmse_timing(results)
+
+
+
+
+
+
+
+
 
   """ Evaluate geometry scan """
   # output_dir = 'C:/Users/rhjva/imperial/molcas_files/fulvene_scan_4/'

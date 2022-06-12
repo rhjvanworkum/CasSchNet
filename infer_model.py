@@ -1,4 +1,7 @@
+from math import factorial
 import torch
+from calculate_evaluation import get_orbital_coeffs
+from rmse import normalise_rows
 import src.schnetpack as spk
 from src.schnetpack.data.parser import read_in_orb_file
 import src.schnetpack.transform as trn
@@ -7,6 +10,7 @@ import numpy as np
 import os
 import shutil
 import subprocess
+import math
 
 def numpy_to_string(array: np.ndarray) -> str:
   string = ''
@@ -78,6 +82,64 @@ def predict_orbital_coeffs(geometry_path: str, model_path: str, cutoff: float) -
 
   return output['orbital_coeffs'].detach().numpy()[0]
 
+import scipy.linalg
+def matrix_exp(X):
+  # exp = torch.eye(n=X.shape[0])
+  # k = 500
+
+  # for i in range(1, k):
+  #   exp += (1 / math.factorial(i)) * torch.matrix_power(X, i)
+
+  # return exp
+  return scipy.linalg.expm(X.numpy())
+
+
+def predict_orbital_coeffs_rotation(geometry_path: str, model_path: str, cutoff: float, ref_file: str) -> np.ndarray:
+  """ Transform the example into torch input batch """
+  atoms = io.read(geometry_path)
+  converter = spk.interfaces.AtomsConverter(neighbor_list=trn.ASENeighborList(cutoff=cutoff), dtype=torch.float32)
+  input = converter(atoms)
+
+  """ Load the model """
+  if torch.cuda.is_available():
+    device = torch.device('cuda')
+  else:
+    device = torch.device('cpu')
+
+  model = torch.load(model_path, map_location=device).to(device)
+  model.eval()
+
+  output = model(input)
+  values = output['orbital_coeffs'].detach()[0]
+
+  ind = torch.triu_indices(36, 36)
+  x_ind = ind[0].tolist()
+  y_ind = ind[1].tolist()
+  for idx, (x, y) in enumerate(zip(x_ind, y_ind)):
+    if x == y:
+      x_ind.pop(idx)
+      y_ind.pop(idx)
+  x_ind = torch.tensor(x_ind)
+  y_ind = torch.tensor(y_ind)
+
+  X = torch.zeros((36, 36))
+  X[(x_ind, y_ind)] = values
+  X = X - X.T
+
+  # print(np.linalg.det(torch.linalg.matrix_exp(X)))
+  # # U = torch.linalg.matrix_exp(X)
+  # # print(np.matmul(U, np.conj(U).T))
+  # U = matrix_exp(X)
+  # print(np.linalg.det(U))
+
+  # refs = torch.from_numpy(get_orbital_coeffs(ref_file)).double()
+  # orbs = torch.matmul(torch.linalg.matrix_exp(X).double(), refs).flatten().numpy()
+  refs = get_orbital_coeffs(ref_file)
+  orbs = np.matmul(scipy.linalg.expm(X.numpy()), refs).flatten()
+
+  return orbs
+
+
 def prepare_molcas_calculation(model_path, geometry_file, orb_file, output_dir, n_mo, is_delta=False):
   if not os.path.exists(output_dir):
     os.makedirs(output_dir)
@@ -99,9 +161,10 @@ def prepare_molcas_calculation(model_path, geometry_file, orb_file, output_dir, 
     shutil.copy2(geometry_file, output_dir + 'CASSCF_ML/geom.xyz')
     shutil.copy2('./CASSCF_ML.input', output_dir + 'CASSCF_ML/CASSCF_ML.input')
 
-  coeffs = predict_orbital_coeffs(geometry_path=geometry_file,
+  coeffs = predict_orbital_coeffs_rotation(geometry_path=geometry_file,
                                   model_path=model_path,
-                                  cutoff=cutoff)
+                                  cutoff=cutoff,
+                                  ref_file=orb_file)
 
   if is_delta:
     ref_coeffs = np.array(read_in_orb_file(orb_file))
@@ -115,12 +178,12 @@ def prepare_molcas_calculation(model_path, geometry_file, orb_file, output_dir, 
       n=n_mo)
 
 def run_molcas_calculations(output_dir):
-  subprocess.run('cd ' + output_dir + 'CASCI_ML && sudo pymolcas CASCI_ML.input > calc.log', shell=True)
-  subprocess.run('cd ' + output_dir + 'CASSCF_ML && sudo pymolcas CASSCF_ML.input > calc.log', shell=True)
-  subprocess.run('cd ' + output_dir + 'CASSCF && sudo pymolcas CASSCF.input > calc.log', shell=True)
+  subprocess.run('cd ' + output_dir + 'CASCI_ML && sudo /opt/OpenMolcas/pymolcas CASCI_ML.input > calc.log', shell=True)
+  subprocess.run('cd ' + output_dir + 'CASSCF_ML && sudo /opt/OpenMolcas/pymolcas CASSCF_ML.input > calc.log', shell=True)
+  subprocess.run('cd ' + output_dir + 'CASSCF && sudo /opt/OpenMolcas/pymolcas CASSCF.input > calc.log', shell=True)
 
 if __name__ == "__main__":
-  model_path = './checkpoints/fulvene_scan_2_mse.pt'
+  model_path = './checkpoints/fulvene_scan_molcas_nocorr.pt'
   n_mo = 36
   cutoff = 5.0
 
@@ -137,13 +200,13 @@ if __name__ == "__main__":
   #   )
 
   """ Preparing a list of calculations - model output """
-  # split_file = './data/fulvene_MB_140.npz'
-  # base_dir = 'C:/Users/rhjva/imperial/sharc_files/run_MB/'
-  # output_dir = 'C:/Users/rhjva/imperial/molcas_files/wigner_dist_200/run_MB_140_molwise_concatenate/'
+  # # split_file = './data/fulvene_MB_140.npz'
+  # # base_dir = 'C:/Users/rhjva/imperial/sharc_files/run_MB/'
+  # # output_dir = 'C:/Users/rhjva/imperial/molcas_files/wigner_dist_200/run_MB_140_molwise_concatenate/'
 
   # split_file = './data/fulvene_MB_140.npz'
   # base_dir = 'C:/Users/rhjva/imperial/molcas_files/fulvene_scan_2/'
-  # output_dir = 'C:/Users/rhjva/imperial/molcas_files/fulvene_scan_2_experiment0_mse_2/'
+  # output_dir = 'C:/Users/rhjva/imperial/molcas_files/fulvene_scan_molcas_nocorr/'
 
   # indices = np.load(split_file)['test_idx']
 
@@ -151,14 +214,14 @@ if __name__ == "__main__":
   #   prepare_molcas_calculation(
   #     model_path=model_path,
   #     geometry_file=base_dir + 'geometry_' + str(index) + '/CASSCF/geom.xyz',
-  #     orb_file="C:/Users/rhjva/imperial/molcas_files/fulvene_scan_2/geometry_0/CASSCF/geom.orb",
+  #     orb_file="C:/Users/rhjva/imperial/molcas_files/fulvene_scan/geometry_" + str(index) + '/casscf/geom.Orb',
   #     output_dir=output_dir + 'geometry_' + str(index) + '/',
-  #     n_mo=n_mo
+  #     n_mo=n_mo,
   #   )
 
   """ Running the calculations - model output """
   split_file = './data/fulvene_MB_140.npz'
-  output_dir = '/mnt/c/users/rhjva/imperial/molcas_files/fulvene_scan_2_experiment0_mse_2/'
+  output_dir = '/mnt/c/users/rhjva/imperial/molcas_files/fulvene_scan_molcas_nocorr/'
   indices = np.load(split_file)['test_idx']
 
   for i, index in enumerate(indices):

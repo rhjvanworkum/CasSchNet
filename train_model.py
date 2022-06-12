@@ -1,19 +1,22 @@
 import logging
-
 import pytorch_lightning
+import torchmetrics
 from pytorch_lightning.loggers import WandbLogger
 from sklearn.metrics import log_loss
-
 import src.schnetpack as spk
 import schnetpack.transform as trn
-from model import get_model
 
-model_name = 'fulvene_scan_2_mse'
-database = './data/fulvene_scan_2.db'
-split_file = './data/fulvene_scan_140.npz'
+from models.loss_functions import rotated_mse, mo_energy_loss
+from models.orbital_model import get_orbital_model
+from models.orbital_rotation_model import get_orbital_rotation_model
+
+model_name = 'geom_scan_200_hamiltonian_moe'
+database = './data/geom_scan_200_hamiltonian.db'
+split_file = './data/geom_scan_200.npz'
 
 cutoff = 5.0
-n_coeffs = 36 * 36
+basis_set_size = 36
+property = 'F'
 
 epochs = 100
 batch_size = 16
@@ -28,19 +31,21 @@ dataset = spk.data.AtomsDataModule(
     trn.ASENeighborList(cutoff=5.),
     trn.CastTo32()
   ],
-  property_units={'orbital_coeffs': 1.0},
+  property_units={property: 1.0, 'hf_guess': 1.0, 'overlap': 1.0},
   num_workers=0,
   pin_memory=True,
-  load_properties=['orbital_coeffs']
+  load_properties=[property, 'hf_guess', 'overlap']
 )
 
-model = get_model(cutoff, n_coeffs, lr)
+""" Initiating the Model """
+model = get_orbital_model(loss_fn=mo_energy_loss, loss_type="orbitals", lr=lr, output_key=property)
 
 """ Just for testing purposes """
 # dataset.setup()
 # for idx, sample in enumerate(dataset.train_dataloader()):
 #   # output = model(sample)
 #   loss = model.training_step(sample, 0)
+#   # loss = model.training_step(sample, 1)
 #   print(loss)
 #   break
 
@@ -66,7 +71,7 @@ callbacks = [
     pytorch_lightning.callbacks.LearningRateMonitor(logging_interval="epoch"),
 ]
 
-logger = WandbLogger(project="schnet-sa-orbitals-2")
+logger = WandbLogger(project="ground-state-orbitals")
 trainer = pytorch_lightning.Trainer(callbacks=callbacks, 
                                     logger=logger,
                                     default_root_dir='./test/',

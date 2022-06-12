@@ -1,0 +1,210 @@
+calculation 45 ML: False
+RMSE of ML_coeffs: 334.53126034389857 
+iterations: 6 
+timing: 13.225883483886719 
+
+calculation 45 ML: True
+RMSE of ML_coeffs: 647.7079458498562 
+iterations: 50 
+timing: 160.63180899620056 
+
+calculation 197 ML: False
+RMSE of ML_coeffs: 253.72939095733685 
+iterations: 3 
+timing: 4.1057116985321045 
+
+calculation 197 ML: True
+RMSE of ML_coeffs: 482.08637509403866 
+iterations: 50 
+timing: 133.4437849521637 
+
+calculation 42 ML: False
+RMSE of ML_coeffs: 352.3354550407413 
+iterations: 6 
+timing: 6.99643087387085 
+
+calculation 42 ML: True
+RMSE of ML_coeffs: 554.7723565363967 
+iterations: 50 
+timing: 140.03162837028503 
+
+calculation 25 ML: False
+RMSE of ML_coeffs: 287.6272120102619 
+iterations: 7 
+timing: 8.01160740852356 
+
+calculation 25 ML: True
+RMSE of ML_coeffs: 526.1928031796366 
+iterations: 50 
+timing: 147.05889058113098 
+
+calculation 183 ML: False
+RMSE of ML_coeffs: 314.80389981016464 
+iterations: 4 
+timing: 3.88364839553833 
+
+calculation 183 ML: True
+RMSE of ML_coeffs: 559.3660301902019 
+iterations: 50 
+timing: 117.20598769187927 
+
+calculation 6 ML: False
+RMSE of ML_coeffs: 284.00728089306955 
+iterations: 8 
+timing: 10.176565170288086 
+
+calculation 6 ML: True
+RMSE of ML_coeffs: 551.7272085513438 
+iterations: 50 
+timing: 135.14657950401306 
+
+calculation 58 ML: False
+RMSE of ML_coeffs: 349.20759733223724 
+iterations: 6 
+timing: 7.334698438644409 
+
+calculation 58 ML: True
+RMSE of ML_coeffs: 633.7194192775322 
+iterations: 50 
+timing: 150.60851407051086 
+
+calculation 40 ML: False
+RMSE of ML_coeffs: 349.03390620135735 
+iterations: 6 
+timing: 7.555893659591675 
+
+calculation 40 ML: True
+RMSE of ML_coeffs: 584.0796451528997 
+iterations: 50 
+timing: 147.26196575164795 
+
+calculation 91 ML: False
+RMSE of ML_coeffs: 377.92576357470597 
+iterations: 5 
+timing: 5.719403505325317 
+
+calculation 91 ML: True
+RMSE of ML_coeffs: 560.1964749863339 
+iterations: 47 
+timing: 173.26925611495972 
+
+calculation 11 ML: False
+RMSE of ML_coeffs: 286.41421706420954 
+iterations: 8 
+timing: 13.382728099822998 
+
+calculation 11 ML: True
+RMSE of ML_coeffs: 530.1876222760864 
+iterations: 50 
+timing: 146.69391679763794 
+
+calculation 102 ML: False
+RMSE of ML_coeffs: 377.2318265367125 
+iterations: 5 
+timing: 6.4134907722473145 
+
+calculation 102 ML: True
+RMSE of ML_coeffs: 605.2147309027755 
+iterations: 50 
+timing: 156.36611127853394 
+
+calculation 191 ML: False
+RMSE of ML_coeffs: 261.24369686882403 
+iterations: 3 
+timing: 4.07195258140564 
+
+calculation 191 ML: True
+RMSE of ML_coeffs: 586.8236049988886 
+iterations: 50 
+timing: 153.50264692306519 
+
+calculation 67 ML: False
+RMSE of ML_coeffs: 406.0001446968188 
+iterations: 6 
+timing: 9.16988730430603 
+
+calculation 67 ML: True
+RMSE of ML_coeffs: 576.3399026782978 
+iterations: 50 
+timing: 176.14895033836365 
+
+calculation 179 ML: False
+RMSE of ML_coeffs: 309.65546682620095 
+iterations: 3 
+timing: 4.46073579788208 
+
+calculation 179 ML: True
+RMSE of ML_coeffs: 565.5115024291135 
+iterations: 50 
+timing: 170.13611721992493 
+
+calculation 53 ML: False
+RMSE of ML_coeffs: 345.1941477998145 
+iterations: 6 
+timing: 8.59416937828064 
+
+calculation 53 ML: True
+RMSE of ML_coeffs: 570.6762378136507 
+iterations: 50 
+timing: 150.87483501434326 
+
+calculation 37 ML: False
+RMSE of ML_coeffs: 309.5272152949981 
+iterations: 6 
+timing: 8.781867980957031 
+
+calculation 37 ML: True
+RMSE of ML_coeffs: 571.6311873898982 
+iterations: 50 
+timing: 152.06415486335754 
+
+calculation 72 ML: False
+RMSE of ML_coeffs: 408.74660443382203 
+iterations: 5 
+timing: 7.728311777114868 
+
+calculation 72 ML: True
+RMSE of ML_coeffs: 553.8350187181208 
+iterations: 50 
+timing: 174.20578813552856 
+
+calculation 195 ML: False
+RMSE of ML_coeffs: 275.8817190136305 
+iterations: 3 
+timing: 4.256298065185547 
+
+calculation 195 ML: True
+RMSE of ML_coeffs: 616.3232624310494 
+iterations: 50 
+timing: 127.2301983833313 
+
+calculation 35 ML: False
+RMSE of ML_coeffs: 321.2558228603721 
+iterations: 7 
+timing: 8.684713125228882 
+
+calculation 35 ML: True
+RMSE of ML_coeffs: 588.9211255693712 
+iterations: 50 
+timing: 150.49993777275085 
+
+calculation 146 ML: False
+RMSE of ML_coeffs: 366.2113829733999 
+iterations: 4 
+timing: 4.258681058883667 
+
+calculation 146 ML: True
+RMSE of ML_coeffs: 547.0621170035292 
+iterations: 50 
+timing: 171.47502183914185 
+
+calculation 54 ML: False
+RMSE of ML_coeffs: 345.56706256131133 
+iterations: 6 
+timing: 7.011578798294067 
+
+calculation 54 ML: True
+RMSE of ML_coeffs: 607.4551588349295 
+iterations: 50 
+timing: 153.77309274673462 
+

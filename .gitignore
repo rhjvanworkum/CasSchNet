@@ -25,6 +25,15 @@ checkpoints/*
 best_inference_model
 best_inference_model.pot
 
+/old
+/results
+/tempdir
+
+/test
+.test
+/rl
+.rl
+
 # hydra stuff
 outputs
 logs

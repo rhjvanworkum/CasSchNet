@@ -141,13 +141,27 @@ def total_mo_energy(pred, target, overlap):
 
     F_pred_prime = torch.matmul(X.T, torch.matmul(pred.type(torch.complex64), X))
     mo_e_pred, _ = torch.linalg.eig(F_pred_prime)
+    mo_e_pred = mo_e_pred.type(torch.float32)
 
     F_target_prime = torch.matmul(X.T, torch.matmul(target.type(torch.complex64), X))
     mo_e_target, _ = torch.linalg.eig(F_target_prime)
+    mo_e_target = mo_e_target.type(torch.float32)
 
     return torch.sum(torch.abs(mo_e_target - mo_e_pred))
 
 """ MO Energy metric for learned Hamiltonains """
+
+def hamiltonian_mse(pred, targets):
+    pred = pred.reshape(-1, 36, 36)
+    targets = targets.reshape(-1, 36, 36)
+
+    batch_size = pred.shape[0]
+    loss = 0
+    for i in range(batch_size):
+        H = 0.5 * (pred[i] + pred[i].T)
+        loss += torch.sum(torch.square(targets[i].flatten() - H.flatten())) / len(targets[i].flatten())
+    return loss / batch_size
+
 def mo_energy_loss(pred, targets, ref, overlaps, indices):
     pred = pred.reshape(-1, 36, 36)
     targets = targets.reshape(-1, 36, 36)
@@ -156,5 +170,7 @@ def mo_energy_loss(pred, targets, ref, overlaps, indices):
     batch_size = pred.shape[0]
     loss = 0
     for i in range(batch_size):
-        loss += total_mo_energy(pred[i], targets[i], overlaps[i])
-    return loss
+        H = 0.5 * (pred[i] + pred[i].T)
+        # H = pred[i]
+        loss += total_mo_energy(H, targets[i], overlaps[i])
+    return loss / batch_size

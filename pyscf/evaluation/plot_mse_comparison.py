@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from evaluate import extract_results
+from old.evaluate import extract_results
 
 def mse(mat1, mat2):
   return np.sum((mat2.flatten() - mat1.flatten()) ** 2) / len(mat2.flatten())
@@ -10,15 +10,22 @@ if __name__ == "__main__":
   base_dir = 'C:/Users/rhjva/imperial/fulvene/hf_calculations/experiments/'
   split_file = '../../data/geom_scan_200.npz'
 
+  # # GS - geom_scan_200
+  dir_list = ['geom_scan_200_mo_coeffs_mse/', 'geom_scan_200_hamiltonian_mse/', 'geom_scan_200_hamiltonian_moe/']
+  # GS - wigner_dist_2000
+  # dir_list = ['wigner_dist_2000_mo_coeffs_mse/', 'wigner_dist_2000_hamiltonian_mse/', 'wigner_dist_2000_hamiltonian_moe/']
+  # # ES - geom_scan_200
+  # dir_list = ['geom_scan_200_mo_coeffs_mse/', 'geom_scan_200_mo_coeffs_rot_mse/', 'geom_scan_200_hamiltonian_mse/']
+
   """ PLOT HERE the thing where you compare the MSE's of different guesses with their t_tot """
-  for dir in ['geom_scan_200_mo_coeffs_mse/', 'geom_scan_200_hamiltonian_mse/', 'geom_scan_200_hamiltonian_moe/']:
+  for dir in dir_list:
     hf_results, ml_results = extract_results(split_file, base_dir + dir)
     mse_errors = [mse(result.guess, result.converged) for result in ml_results]
-    t_tots = [result.t_tot for result in ml_results]
+    t_tots = [result.imacro for result in ml_results]
     plt.scatter(mse_errors, t_tots, label=dir.replace('geom_scan_200_', ''))
 
   mse_errors = [mse(result.guess, result.converged) for result in hf_results]
-  t_tots = [result.t_tot for result in hf_results]
+  t_tots = [result.imacro for result in hf_results]
   plt.scatter(mse_errors, t_tots, label='ao-min')
   
   plt.title('Convergence time vs. guess Density Matrix MSE - different guesses')
@@ -30,7 +37,7 @@ if __name__ == "__main__":
 
   """ PLOT HERE the thing where you compare the MSE's of different geometries """
   results_list = []
-  for dir in ['geom_scan_200_mo_coeffs_mse/', 'geom_scan_200_hamiltonian_mse/', 'geom_scan_200_hamiltonian_moe/']:
+  for dir in dir_list:
     hf_results, ml_results = extract_results(split_file, base_dir + dir)
     results_list.append(ml_results)
   results_list.append(hf_results)
@@ -38,7 +45,7 @@ if __name__ == "__main__":
   for geom_idx in range(4):
     mse_errors = np.array([mse(results_list[i][geom_idx].guess, results_list[i][geom_idx].converged) for i in range(4)])
     ind = np.argsort(mse_errors)
-    t_tots = np.array([results_list[i][geom_idx].t_tot for i in range(4)])
+    t_tots = np.array([results_list[i][geom_idx].imacro for i in range(4)])
     plt.plot(mse_errors[ind], t_tots[ind], '-*', label='geometry ' + str(geom_idx))
 
   plt.title('Convergence time vs. guess Density Matrix MSE - different geometries')

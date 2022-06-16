@@ -6,17 +6,16 @@ from sklearn.metrics import log_loss
 import src.schnetpack as spk
 import schnetpack.transform as trn
 
-from models.loss_functions import rotated_mse, mo_energy_loss
+from models.loss_functions import rotated_mse, mo_energy_loss, hamiltonian_mse
 from models.orbital_model import get_orbital_model
-from models.orbital_rotation_model import get_orbital_rotation_model
 
-model_name = 'geom_scan_200_hamiltonian_moe'
-database = './data/geom_scan_200_hamiltonian.db'
+model_name = 'geom_scan_200_molcas_hamiltonian_mse'
+database = './data/geom_scan_200_molcas_hamiltonian.db'
 split_file = './data/geom_scan_200.npz'
 
 cutoff = 5.0
 basis_set_size = 36
-property = 'F'
+property = 'AO_FOCKINT_MATRIX'
 
 epochs = 100
 batch_size = 16
@@ -38,7 +37,7 @@ dataset = spk.data.AtomsDataModule(
 )
 
 """ Initiating the Model """
-model = get_orbital_model(loss_fn=mo_energy_loss, loss_type="orbitals", lr=lr, output_key=property)
+model = get_orbital_model(loss_fn=hamiltonian_mse, loss_type="", lr=lr, output_key=property)
 
 """ Just for testing purposes """
 # dataset.setup()
@@ -62,16 +61,13 @@ callbacks = [
         filename="{epoch:02d}",
         inference_path="./checkpoints/" + model_name + ".pt"
     ),
-    # spk.train.ReduceLROnPlateau(
-    #   mode="min"
-    # ),
     # pytorch_lightning.callbacks.EarlyStopping(
     #     monitor="val_loss", patience=150, mode="min", min_delta=0.0
     # ),
     pytorch_lightning.callbacks.LearningRateMonitor(logging_interval="epoch"),
 ]
 
-logger = WandbLogger(project="ground-state-orbitals")
+logger = WandbLogger(project="excited-state-orbitals")
 trainer = pytorch_lightning.Trainer(callbacks=callbacks, 
                                     logger=logger,
                                     default_root_dir='./test/',

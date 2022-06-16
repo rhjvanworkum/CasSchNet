@@ -6,6 +6,7 @@ from tqdm import tqdm
 import tempfile
 import numpy as np
 import re
+import h5py
 
 def parse_property_string(prop_str):
     """
@@ -179,110 +180,23 @@ def correct_phase(mo_array: np.ndarray) -> None:
     if np.dot(mo_array[idx], ref) < 0:
       mo_array[idx] = np.negative(mo_array[idx])
 
-def parse_molcas_rasscf_calculations(calculation_folders, db_path, reference_file, use_delta=False):
-  xyz_files = []
-  all_orbitals = []
-
-  for workdir in calculation_folders:
-    
-    # extract xyz file and orbital file 
-    orb_file = None
-    for _, _, files in os.walk(workdir):
-      for file in files:
-        # print(file)
-        if file.split('.')[-1] == 'xyz':
-          xyz_files.append(file)
-        elif file.split('.')[-1] == 'RasOrb':
-          orb_file = file
-    
-    # extract orbitals
-    orbitals = read_in_orb_file(workdir + orb_file)
-    all_orbitals.append(orbitals)
-
-  all_orbitals = np.array(all_orbitals)
-  ref = read_in_orb_file(reference_file)
-  for idx, orbitals in enumerate(all_orbitals):
-    all_orbitals[idx] = order_orbitals(ref, orbitals)
-    # all_orbitals[idx] = normalise_rows(all_orbitals[idx])
-
-  # use a delta approach
-  if use_delta:
-    for idx in range(all_orbitals.shape[0]):
-      all_orbitals[idx] -= ref
-
-  for idx, workdir in enumerate(calculation_folders):
-    xyz_to_db(workdir + xyz_files[idx], 
-              db_path,
-              idx=idx, 
-              atomic_properties="",
-              molecular_properties=[{'orbital_coeffs': all_orbitals[idx].flatten(), 'workdir': workdir}])
-
-def parse_molcas_calculations(geom_files, mo_files, hf_guesses, ref_mo_file, db_path):
-  # read in converged orbitals
-  all_orbitals = []
-  for mo_file in mo_files:
-    all_orbitals.append(np.array(read_in_orb_file(mo_file)))
-
-  # readin HF guess orbitals
-  all_hf_guesses = []
-  for hf_guess in hf_guesses:
-    all_hf_guesses.append(np.array(read_in_orb_file(hf_guess)))
-
-  # order & phase correct all orbitals
-  all_orbitals = np.array(all_orbitals)
-  ref = read_in_orb_file(ref_mo_file)
-  for idx, orbitals in enumerate(all_orbitals):
-    all_orbitals[idx] = order_orbitals(ref, orbitals)
-
-  # also do this to HF guesses?
-  # all_hf_guesses = np.array(all_hf_guesses)
-  # ref = read_in_orb_file(ref_mo_file)
-  # for idx, orbitals in enumerate(all_hf_guesses):
-  #   all_hf_guesses[idx] = order_orbitals(ref, orbitals)
-
-  for idx, geom_file in enumerate(geom_files):
-    xyz_to_db(geom_file,
-              db_path,
-              idx=idx,
-              atomic_properties="",
-              molecular_properties=[{'orbital_coeffs': all_orbitals[idx].flatten(), 'hf_guess': all_hf_guesses[idx].flatten()}])
+def parse_molcas_calculations(geom_files, hdf5_file_path, db_path, save_property='MO_VECTORS', apply_phase_correction=False, n_basis=36):
+  hdf5_files = [h5py.File(hdf5_file) for hdf5_file in hdf5_file_path]
+  main_property = [hdf5.get(save_property)[:].reshape(-1, n_basis) for hdf5 in hdf5_files]
+  all_guess = [hdf5.get('MO_VECTORS')[:].reshape(-1, n_basis) for hdf5 in hdf5_files]
+  all_overlap = [hdf5.get('AO_OVERLAP_MATRIX')[:].reshape(-1, n_basis) for hdf5 in hdf5_files]
   
-
-def parse_pyscf_rasscf_calculations(geom_files, mo_files, hf_guesses, ref_mo_file, db_path):
-  all_orbitals = []
-  for mo_file in mo_files:
-    all_orbitals.append(np.load(mo_file)['mo_coeffs'])
-
-  all_hf_guesses = []
-  for hf_guess in hf_guesses:
-    all_hf_guesses.append(np.load(hf_guess))
+  if apply_phase_correction:
+    ref = main_property[0]
+    for idx, orbitals in enumerate(main_property):
+      main_property[idx] = order_orbitals(ref, orbitals)
 
   for idx, geom_file in enumerate(geom_files):
     xyz_to_db(geom_file,
               db_path,
               idx=idx,
               atomic_properties="",
-              molecular_properties=[{'orbital_coeffs': all_orbitals[idx].flatten(), 'hf_guess': all_hf_guesses[idx].flatten()}])
-
-def parse_pyscf_calculations(geom_files, mo_files, hf_guesses, overlap_files, guess_occ_files, conv_occ_files, db_path):
-  all_orbitals = [np.load(mo_file)['mo_coeffs'] for mo_file in mo_files]
-  all_hf_guesses = [np.load(hf_guess) for hf_guess in hf_guesses]
-  all_overlap = [np.load(overlap_file) for overlap_file in overlap_files]
-  all_guess_occ = [np.load(guess_occ) for guess_occ in guess_occ_files]
-  all_conv_occ = [np.load(conv_occ) for conv_occ in conv_occ_files]
-
-  for idx, geom_file in enumerate(geom_files):
-    xyz_to_db(geom_file,
-              db_path,
-              idx=idx,
-              atomic_properties="",
-              molecular_properties=[{
-                'orbital_coeffs': all_orbitals[idx].flatten(), 
-                'hf_guess': all_hf_guesses[idx].flatten(),
-                'overlap': all_overlap[idx].flatten(),
-                'guess_occ': all_guess_occ[idx].flatten(),
-                'conv_occ': all_conv_occ[idx].flatten()
-              }])
+              molecular_properties=[{save_property: main_property[idx].flatten(), 'hf_guess': all_guess[idx], 'overlap': all_overlap[idx]}])
 
 def parse_pyscf_calculations(geom_files, mo_files, db_path, save_property='mo_coeffs', apply_phase_correction=False):
   main_property = [np.load(mo_file)[save_property] for mo_file in mo_files]

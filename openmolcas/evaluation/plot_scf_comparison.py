@@ -1,12 +1,24 @@
-# import numpy as np
-# import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib.pyplot as plt
 
-# from evaluate import extract_results
+from evaluate import extract_results
   
 
-# if __name__ == "__main__":
-#   base_dir = 'C:/Users/rhjva/imperial/fulvene/casscf_calculations/experiments/'
-#   split_file = '../../data/geom_scan_200.npz'
+if __name__ == "__main__":
+  base_dir = 'C:/Users/rhjva/imperial/fulvene/openmolcas_calculations/experiments/geom_scan_200_hamiltonian_mse_6/'
+  split_file = '../../data/geom_scan_200.npz'
+
+  std_results, ml_results = extract_results(split_file, base_dir)
+
+  std_iterations = [result.imacro for result in std_results]
+  ml_iterations = [result.imacro for result in ml_results]
+
+  print('std results ', 'N iterations: ', np.mean(std_iterations), ' +/- ', np.std(std_iterations))
+  print('ml results ', 'N iterations: ', np.mean(ml_iterations), ' +/- ', np.std(ml_iterations))
+
+
+  plt.scatter(x=std_iterations, y=ml_iterations, label='haha')
+  plt.show()
 
 #   # # GS - geom_scan_200
 #   # dir_list = ['geom_scan_200_mo_coeffs_mse/', 'geom_scan_200_hamiltonian_mse/', 'geom_scan_200_hamiltonian_moe/']

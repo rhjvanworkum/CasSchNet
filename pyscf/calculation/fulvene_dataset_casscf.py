@@ -8,7 +8,7 @@ from pyscf import gto, mcscf, lib
 
 if __name__ == "__main__":
   geometries_base_path = '/mnt/c/users/rhjva/imperial/fulvene/geometries/geom_scan_200/'
-  output_path = '/mnt/c/users/rhjva/imperial/fulvene/casscf_calculations/geom_scan_200/'
+  output_path = '/mnt/c/users/rhjva/imperial/fulvene/casscf_calculations/geom_scan_200_sto_6g/'
   n_geometries = 200
 
   if not os.path.exists(output_path):
@@ -42,14 +42,16 @@ if __name__ == "__main__":
     t_tot = time.time() - tstart
     F = mcas.get_fock()
 
+    assert np.allclose(F, F.T)
+
     # save CASSCF result
-    np.savez(output_path + 'geometry_' + str(i) + '.npz',
-             t_tot=t_tot,
-             imacro=imacro,
-             mo_coeffs=mo_coeffs,
-             guess=mo,
-             S=S,
-             F=F)
+    # np.savez(output_path + 'geometry_' + str(i) + '.npz',
+    #          t_tot=t_tot,
+    #          imacro=imacro,
+    #          mo_coeffs=mo_coeffs,
+    #          guess=mo,
+    #          S=S,
+    #          F=F)
 
 
     print(i / n_geometries * 100, ' %')

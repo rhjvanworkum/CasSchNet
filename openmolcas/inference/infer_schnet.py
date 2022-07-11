@@ -76,8 +76,11 @@ def predict_guess(model_path, geometry_path, S, cutoff=5.0):
 
 #   return np.matmul(U, mo)
 
+def ao_2_mo(fock, mo):
+  return np.matmul(mo.T, np.matmul(fock, mo))
+
 """ Predict guess using model infering the Hamiltonian matrix """
-def predict_guess_F(model_path, geometry_path, S, cutoff=5.0):
+def predict_guess_F(model_path, geometry_path, S, key='AO_FOCKINT_MATRIX', cutoff=5.0, use_overlap=True):
   if torch.cuda.is_available():
     device = torch.device('cuda')
   else:
@@ -87,25 +90,85 @@ def predict_guess_F(model_path, geometry_path, S, cutoff=5.0):
   atoms = io.read(geometry_path)
   converter = spk.interfaces.AtomsConverter(neighbor_list=trn.ASENeighborList(cutoff=cutoff), dtype=torch.float32, device=device)
   input = converter(atoms)
+  
   # load model
   model = torch.load(model_path, map_location=device).to(device)
   model.eval()
 
   # predicting Fock matrix
   output = model(input)
-  values = output['AO_FOCKINT_MATRIX'].detach().cpu().numpy()[0]
+  values = output[key].detach().cpu().numpy()[0]
   F = values.reshape(36, 36)
   F = 0.5 * (F + F.T)
 
   # F -> MO coeffs
-  e_s, U = np.linalg.eig(S)
-  diag_s = np.diag(e_s ** -0.5)
-  X = np.dot(U, np.dot(diag_s, U.T))
+  if use_overlap:
+    e_s, U = np.linalg.eig(S)
+    diag_s = np.diag(e_s ** -0.5)
+    X = np.dot(U, np.dot(diag_s, U.T))
 
-  F_prime = np.dot(X.T, np.dot(F, X))
-  evals_prime, C_prime = np.linalg.eig(F_prime)
-  indices = evals_prime.argsort()
-  C_prime = C_prime[:, indices]
-  C = np.dot(X, C_prime)
+    F_prime = np.dot(X.T, np.dot(F, X))
+    evals_prime, C_prime = np.linalg.eig(F_prime)
+    indices = evals_prime.argsort()
+    C_prime = C_prime[:, indices]
+    C = np.dot(X, C_prime).T
+  else:
+    evals_prime, C_prime = np.linalg.eig(F)
+    indices = evals_prime.argsort()
+    C = C_prime[:, indices].T
 
-  return C
+  return C, F
+
+# import sys
+# sys.path.insert(1, '/mnt/c/users/rhjva/imperial/pyscf/')
+
+# from pyscf import gto, scf, mcscf
+
+# import numpy as np
+# import torch
+# import schnetpack as spk
+# import schnetpack.transform as trn
+# from ase import io
+# import scipy
+# import scipy.linalg
+
+# def predict_guess_F(model_path, geometry_path, cutoff=5.0):
+#   if torch.cuda.is_available():
+#     device = torch.device('cuda')
+#   else:
+#     device = torch.device('cpu')
+
+#   # transform geometry into input batch
+#   atoms = io.read(geometry_path)
+#   converter = spk.interfaces.AtomsConverter(neighbor_list=trn.ASENeighborList(cutoff=cutoff), dtype=torch.float32, device=device)
+#   input = converter(atoms)
+#   # load model
+#   model = torch.load(model_path, map_location=device).to(device)
+#   model.eval()
+
+
+#   # predicting Fock matrix
+#   output = model(input)
+#   values = output['F'].detach().cpu().numpy()[0]
+#   F = values.reshape(36, 36)
+#   F = 0.5 * (F + F.T)
+
+#   # creating mol
+#   mol = gto.M(atom=geometry_path,
+#             basis="sto-6g",
+#             spin=0)
+#   myscf = mol.RHF()
+
+#   # F -> MO coeffs
+#   S = myscf.get_ovlp(mol)
+#   e_s, U = np.linalg.eig(S)
+#   diag_s = np.diag(e_s ** -0.5)
+#   X = np.dot(U, np.dot(diag_s, U.T))
+
+#   F_prime = np.dot(X.T, np.dot(F, X))
+#   evals_prime, C_prime = np.linalg.eig(F_prime)
+#   indices = evals_prime.argsort()
+#   C_prime = C_prime[:, indices]
+#   C = np.dot(X, C_prime)
+
+#   return C

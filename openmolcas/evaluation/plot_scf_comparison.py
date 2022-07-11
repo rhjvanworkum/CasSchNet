@@ -5,19 +5,28 @@ from evaluate import extract_results
   
 
 if __name__ == "__main__":
-  base_dir = 'C:/Users/rhjva/imperial/fulvene/openmolcas_calculations/experiments/geom_scan_200_hamiltonian_mse_6/'
-  split_file = '../../data/geom_scan_200.npz'
+  # base_dir = 'C:/Users/rhjva/imperial/fulvene/openmolcas_calculations/experiments/geom_scan_199_fock_noncan/'
+  # split_file = '../../data/geom_scan_199.npz'
+  # std_results, ml_results = extract_results(split_file, base_dir)
+
+  base_dir = 'C:/Users/rhjva/imperial/fulvene/openmolcas_calculations/experiments/geom_scan_199_GSS_fock_painn_noncan_/'
+  split_file = '../../data/geom_scan_199.npz'
 
   std_results, ml_results = extract_results(split_file, base_dir)
 
-  std_iterations = [result.imacro for result in std_results]
-  ml_iterations = [result.imacro for result in ml_results]
+  std_iterations = np.array([result.imacro for result in std_results])
+  ml_iterations = np.array([result.imacro for result in ml_results])
+
+  indices = np.load(split_file)['val_idx']
+  print([(idx, speedup) for idx, speedup in zip(indices, std_iterations - ml_iterations)])
 
   print('std results ', 'N iterations: ', np.mean(std_iterations), ' +/- ', np.std(std_iterations))
   print('ml results ', 'N iterations: ', np.mean(ml_iterations), ' +/- ', np.std(ml_iterations))
 
 
-  plt.scatter(x=std_iterations, y=ml_iterations, label='haha')
+  # plt.scatter(x=std_iterations, y=ml_iterations, label='haha')
+  # plt.show()
+  plt.bar(x=np.arange(len(std_iterations)), height=std_iterations - ml_iterations)
   plt.show()
 
 #   # # GS - geom_scan_200

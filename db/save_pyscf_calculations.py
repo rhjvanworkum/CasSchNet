@@ -42,9 +42,9 @@ def save_hamiltonian_to_db(geometry_base_dir, calculations_base_dir, n_geometrie
 
 if __name__ == "__main__":
   geometry_base_dir = 'C:/users/rhjva/imperial/fulvene/geometries/geom_scan_200/'
-  calculations_base_dir = 'C:/Users/rhjva/imperial/fulvene/casscf_calculations/geom_scan_200/'
+  calculations_base_dir = 'C:/Users/rhjva/imperial/fulvene/casscf_calculations/geom_scan_200_sto_3g/'
   n_geometries = 200
-  db_path = './data/geom_scan_200_casscf_hamiltonian.db'
+  db_path = './data/geom_scan_200_casscf_sto3g_hamiltonian.db'
 
   # save_mo_coeffs_to_db(geometry_base_dir, calculations_base_dir, n_geometries, db_path)
   save_hamiltonian_to_db(geometry_base_dir, calculations_base_dir, n_geometries, db_path)

@@ -6,16 +6,16 @@ from sklearn.metrics import log_loss
 import src.schnetpack as spk
 import schnetpack.transform as trn
 
-from models.loss_functions import rotated_mse, mo_energy_loss, hamiltonian_mse
+from models.loss_functions import rotated_mse, mo_energy_loss, hamiltonian_mse, hamiltonian_mse_energies
 from models.orbital_model import get_orbital_model
 
-model_name = 'geom_scan_200_molcas_hamiltonian_mse'
-database = './data/geom_scan_200_molcas_hamiltonian.db'
-split_file = './data/geom_scan_200.npz'
+model_name = 'geom_scan_199_molcas_fock_painn_noncan'
+database = './data/geom_scan_199_molcas_fock_noncan.db'
+split_file = './data/geom_scan_199.npz'
 
 cutoff = 5.0
 basis_set_size = 36
-property = 'AO_FOCKINT_MATRIX'
+property = 'F'
 
 epochs = 100
 batch_size = 16
@@ -30,10 +30,10 @@ dataset = spk.data.AtomsDataModule(
     trn.ASENeighborList(cutoff=5.),
     trn.CastTo32()
   ],
-  property_units={property: 1.0, 'hf_guess': 1.0, 'overlap': 1.0},
+  property_units={property: 1.0, 'overlap': 1.0, 'energies': 1.0},
   num_workers=0,
   pin_memory=True,
-  load_properties=[property, 'hf_guess', 'overlap']
+  load_properties=[property, 'overlap', 'energies']
 )
 
 """ Initiating the Model """

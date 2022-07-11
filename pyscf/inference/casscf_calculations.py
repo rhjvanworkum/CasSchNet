@@ -16,7 +16,6 @@ def casscf_calculation(geom_file, initial_guess=None):
                 symmetry=True)
 
   myhf = fulvene.RHF()
-  myhf.kernel()
   S = myhf.get_ovlp(fulvene)
 
   # initiate CASSCF object
@@ -33,9 +32,10 @@ def casscf_calculation(geom_file, initial_guess=None):
     mo = mcas.sort_mo([19, 20, 21, 22, 23, 24], mo)
 
     tstart = time.time()
-    (imacro, _, _, fcivec, mo_coeffs, _) = mcas.kernel(mo)
+    (imacro, _, _, fcivec, mo_coeffs, _) = mcas.kernel(guess)
     t_tot = time.time() - tstart
   else:
+    myhf.kernel()
     guess = myhf.mo_coeff
 
     # project initial guess
@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
   base_dir = '/mnt/c/users/rhjva/imperial/fulvene/geometries/geom_scan_200/'
   split_file = '../../data/geom_scan_200.npz'
-  output_dir = '/mnt/c/users/rhjva/imperial/fulvene/casscf_calculations/experiments/geom_scan_200_hamiltonian_mse_fcivec/'
+  output_dir = '/mnt/c/users/rhjva/imperial/fulvene/casscf_calculations/experiments/geom_scan_200_hamiltonian_mse_withoutprojection/'
 
   if not os.path.exists(output_dir):
     os.makedirs(output_dir)
@@ -67,7 +67,8 @@ if __name__ == "__main__":
     geom_file = base_dir + 'geometry_' + str(index) + '.xyz'
 
     """ HF GUESS """
-    (t_tot, imacro, fcivec, mo_coeffs, guess, S) = casscf_calculation(geom_file=geom_file)
+    # prev_geom_guess = np.load('/mnt/c/users/rhjva/imperial/fulvene/casscf_calculations/geom_scan_200/geometry_' + str(index) + '.npz')['mo_coeffs']
+    (t_tot, imacro, fcivec, mo_coeffs, guess, S) = casscf_calculation(geom_file=geom_file, initial_guess=guess)
     # save converged MO's
     np.savez(output_dir + 'geometry_' + str(index) + '.npz',
              t_tot=t_tot,

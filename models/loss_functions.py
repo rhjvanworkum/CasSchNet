@@ -158,8 +158,33 @@ def hamiltonian_mse(pred, targets):
     batch_size = pred.shape[0]
     loss = 0
     for i in range(batch_size):
+        # H = pred[i]
         H = 0.5 * (pred[i] + pred[i].T)
         loss += torch.sum(torch.square(targets[i].flatten() - H.flatten())) / len(targets[i].flatten())
+    return loss / batch_size
+
+def hamiltonian_mse_energies(pred, targets, overlaps, energies):
+    pred = pred.reshape(-1, 36, 36)
+    targets = targets.reshape(-1, 36, 36)
+    overlaps = overlaps.reshape(-1, 36, 36)
+    energies = energies.reshape(-1, 36)
+
+    batch_size = pred.shape[0]
+    loss = 0
+    for i in range(batch_size):
+        H = 0.5 * (pred[i] + pred[i].T)
+        loss += torch.sum(torch.square(targets[i].flatten() - H.flatten())) / len(targets[i].flatten())
+
+        S = overlaps[i]
+        e_s, U = torch.linalg.eig(S)
+        diag_s = torch.diag(e_s ** -0.5)
+        X = torch.matmul(U, torch.matmul(diag_s, U.T))
+        print(X.dtype)
+        F_prime = torch.matmul(X.T, torch.matmul(H.type(torch.cfloat), X))
+        evals_prime, _ = torch.linalg.eig(F_prime)
+
+        loss += torch.sum(torch.square(energies[i].flatten() - evals_prime.flatten())) / len(evals_prime.flatten())
+
     return loss / batch_size
 
 # MO energy loss for hamiltonian

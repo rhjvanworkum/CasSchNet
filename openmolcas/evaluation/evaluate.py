@@ -17,7 +17,7 @@ def extract_results(split_file, base_dir):
   results = []
   for index in indices:
     # add HF Results
-    result = np.load(base_dir + 'geometry_' + str(index) + '.npz')
+    result = np.load(base_dir + 'geometry_' + str(index) + '.npz', allow_pickle=True)
     results.append(PySCFResult(ml=False,
                                index=index,
                                t_tot=result['t_tot'],
@@ -27,14 +27,15 @@ def extract_results(split_file, base_dir):
                                fci_vec=result['fcivec']))
 
     # add HF_ML Results
-    result = np.load(base_dir + 'geometry_' + str(index) + '_ML.npz')
-    results.append(PySCFResult(ml=True,
-                               index=index,
-                               t_tot=result['t_tot'],
-                               imacro=result['imacro'],
-                               mo_coeffs=result['mo_coeffs'],
-                               S=result['S'],
-                               fci_vec=result['fcivec']))
+    result = np.load(base_dir + 'geometry_' + str(index) + '_ML.npz', allow_pickle=True)
+    if result['imacro'] != None: 
+      results.append(PySCFResult(ml=True,
+                                index=index,
+                                t_tot=result['t_tot'],
+                                imacro=result['imacro'],
+                                mo_coeffs=result['mo_coeffs'],
+                                S=result['S'],
+                                fci_vec=result['fcivec']))
 
   hf_results = list(filter(lambda x: not x.ml, results))
   ml_results = list(filter(lambda x: x.ml, results))

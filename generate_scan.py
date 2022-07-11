@@ -33,11 +33,7 @@ def read_xyz_file(filename):
     _ = f.readline()
 
     for i in range(n_atoms):
-      line = f.readline()
-      if '\t' in line:
-        data = line.replace('\n', '').split('\t')
-      else:
-        data = line.replace('\n', '').split(' ')
+      data = f.readline().replace('\n', '').split(' ')
       data = list(filter(lambda a: a != '', data))
       atoms.append(Atom(data[0], float(data[1]), float(data[2]), float(data[3])))
 
@@ -62,21 +58,20 @@ def interpolate_geometry(geom1, geom2, n):
 
 
 if __name__ == "__main__":
-  fulvene_0 = read_xyz_file('fulvene_0.xyz')
-  fulvene_1 = read_xyz_file('fulvene_1.xyz')
+  fulvene_0 = read_xyz_file('C:/users/rhjva/imperial/fulvene/geometries/geom_scan_200/geometry_0.xyz')
+  fulvene_1 = read_xyz_file('C:/users/rhjva/imperial/fulvene/geometries/geom_scan_200/geometry_199.xyz')
 
-  geometries = interpolate_geometry(fulvene_0, fulvene_1, 200)
+  geometries = interpolate_geometry(fulvene_0, fulvene_1, 2000)
 
   import matplotlib.pyplot as plt
 
   data = []
   for idx, geometry in enumerate(geometries):
-    print(geometry[4].x, float("%.5f" % geometry[4].x))
     data.append(float("%.5f" % geometry[4].x))
 
   plt.plot(np.arange(len(data)), data)
   plt.show()
 
-  # for idx, geometry in enumerate(geometries):
-  #   write_xyz_file(geometry, './molcas_files/fulvene_scan_2/geometry_' + str(idx) + '.xyz')
+  for idx, geometry in enumerate(geometries):
+    write_xyz_file(geometry, 'C:/users/rhjva/imperial/fulvene/geometries/geom_scan_2000/geometry_' + str(idx) + '.xyz')
 

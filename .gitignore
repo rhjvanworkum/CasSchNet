@@ -16,6 +16,11 @@ docs/tutorials/*.db
 docs/tutorials/*.xyz
 docs/tutorials/qm9tut
 
+
+openmolcas/inference/CASCI
+openmolcas/inference/CASSCF
+openmolcas/inference/CASSCF_ML
+
 wandb/
 
 # new stuff

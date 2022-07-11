@@ -22,6 +22,7 @@ class ModelOutput(nn.Module):
         name: str,
         loss_fn: Optional[nn.Module] = None,
         loss_weight: float = 1.0,
+        loss_type: str = None,
         metrics: Optional[Dict[str, Metric]] = None,
         target_property: Optional[str] = None,
     ):
@@ -38,15 +39,21 @@ class ModelOutput(nn.Module):
         self.name = name
         self.target_property = target_property or name
         self.loss_fn = loss_fn
+        self.loss_type = loss_type
         self.loss_weight = loss_weight
         self.metrics = nn.ModuleDict(metrics)
 
     def calculate_loss(self, pred, target):
         if self.loss_weight == 0 or self.loss_fn is None:
             return 0.0
-        loss = self.loss_weight * self.loss_fn(
-            pred[self.name], target[self.target_property]
-        )
+        if self.loss_type == 'energies':
+            loss = self.loss_weight * self.loss_fn(
+                pred[self.name], target[self.target_property], target['overlap'], target['energies']
+            )
+        else:
+            loss = self.loss_weight * self.loss_fn(
+                pred[self.name], target[self.target_property]
+            )
         return loss
 
     def calculate_metrics(self, pred, target):

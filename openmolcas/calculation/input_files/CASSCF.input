@@ -1,11 +1,9 @@
 &GATEWAY
 	coord=geom.xyz
-	basis=ANO-S-MB
+	basis=6-31G*
 	group=NoSym
 &SEWARD
 &RASSCF
-	fileorb=geom.orb
-	outorbitals=canonical
 	spin=1
 	nactel=6 0 0
 	inactive=18

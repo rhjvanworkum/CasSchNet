@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(1, '/mnt/c/users/rhjva/imperial/pyscf/')
+# sys.path.insert(1, '/mnt/c/users/rhjva/imperial/pyscf/')
 
 from pyscf import gto, scf, mcscf
 
@@ -12,7 +12,7 @@ import scipy
 import scipy.linalg
 
 """ Predict guess using model infering MO coeffs """
-def predict_guess(model_path, geometry_path, cutoff=5.0):
+def predict_guess(model_path, geometry_path, n_mo, basis, cutoff=5.0):
   if torch.cuda.is_available():
     device = torch.device('cuda')
   else:
@@ -29,10 +29,10 @@ def predict_guess(model_path, geometry_path, cutoff=5.0):
   # infer the model
   output = model(input)
   values = output['mo_coeffs'].detach().cpu().numpy()[0]
-  return values.reshape(-1, 36)
+  return values.reshape(-1, n_mo)
 
 """ Predict guess using model infering Orbital rotations """
-def predict_guess_rotating(model_path, geometry_path, cutoff=5.0):
+def predict_guess_rotating(model_path, geometry_path, n_mo, basis, cutoff=5.0):
   if torch.cuda.is_available():
     device = torch.device('cuda')
   else:
@@ -48,19 +48,15 @@ def predict_guess_rotating(model_path, geometry_path, cutoff=5.0):
 
   # infer rotation matrix
   output = model(input)
-  values = output['mo_coeffs'][0].reshape(36, 36)
+  values = output['mo_coeffs'][0].reshape(n_mo, n_mo)
   X = 0.5 * (values - values.T)
   U = scipy.linalg.expm(X.cpu().detach().numpy())
 
   # predict new guess
   fulvene = gto.M(atom=geometry_path,
-                basis="sto-6g",
+                basis=basis,
                 spin=0,
                 symmetry=True)
-
-  # ground-state rotating
-  # guess = scf.hf.init_guess_by_minao(fulvene)
-  # return np.matmul(U, guess)
 
   scf = fulvene.RHF()
   scf.kernel()
@@ -77,7 +73,7 @@ def predict_guess_rotating(model_path, geometry_path, cutoff=5.0):
   return np.matmul(U, mo)
 
 """ Predict guess using model infering the Hamiltonian matrix """
-def predict_guess_F(model_path, geometry_path, cutoff=5.0):
+def predict_guess_F(model_path, geometry_path, n_mo, basis, cutoff=5.0):
   if torch.cuda.is_available():
     device = torch.device('cuda')
   else:
@@ -95,12 +91,12 @@ def predict_guess_F(model_path, geometry_path, cutoff=5.0):
   # predicting Fock matrix
   output = model(input)
   values = output['F'].detach().cpu().numpy()[0]
-  F = values.reshape(36, 36)
+  F = values.reshape(n_mo, n_mo)
   F = 0.5 * (F + F.T)
 
   # creating mol
   mol = gto.M(atom=geometry_path,
-            basis="sto-6g",
+            basis=basis,
             spin=0)
   myscf = mol.RHF()
 

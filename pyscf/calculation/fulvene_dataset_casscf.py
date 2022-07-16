@@ -3,12 +3,12 @@ import numpy as np
 import time
 
 import sys
-sys.path.insert(1, '/mnt/c/users/rhjva/imperial/pyscf/')
+# sys.path.insert(1, '/mnt/c/users/rhjva/imperial/pyscf/')
 from pyscf import gto, mcscf, lib
 
 if __name__ == "__main__":
-  geometries_base_path = '/mnt/c/users/rhjva/imperial/fulvene/geometries/geom_scan_200/'
-  output_path = '/mnt/c/users/rhjva/imperial/fulvene/casscf_calculations/geom_scan_200_sto_6g/'
+  geometries_base_path = '/home/ubuntu/fulvene/geometries/geom_scan_200/'
+  output_path = '/home/ubuntu/fulvene/casscf_calculations/geom_scan_200_sto_6g/'
   n_geometries = 200
 
   if not os.path.exists(output_path):
@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     # make MOL
     mol = gto.M(atom=geometries_base_path + "geometry_" + str(i) + ".xyz",
-                basis="sto-6g",
+                basis="STO-6G",
                 spin=0)
     
     # run HF
@@ -52,6 +52,5 @@ if __name__ == "__main__":
     #          guess=mo,
     #          S=S,
     #          F=F)
-
 
     print(i / n_geometries * 100, ' %')

@@ -33,13 +33,14 @@ def get_orbital_model(loss_fn, loss_type, lr, output_key, basis_set_size=36, cut
         name=output_key,
         loss_fn=loss_fn,
         loss_weight=1.0,
-        loss_type=loss_type
+        loss_type=loss_type,
+        basis_set_size=basis_set_size
     )
 
     # Putting it in the Atomistic Task framework
     task = spk.AtomisticTask(
         model=nnp,
-        outputs=[output, Fake('overlap'), Fake('energies')],
+        outputs=[output, Fake('overlap'), Fake('hf_guess')],
         optimizer_cls=torch.optim.Adam,
         optimizer_args={"lr": lr},
         scheduler_cls=torch.optim.lr_scheduler.ReduceLROnPlateau,

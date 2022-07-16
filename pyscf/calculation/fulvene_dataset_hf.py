@@ -3,7 +3,7 @@ import numpy as np
 import time
 
 import sys
-sys.path.insert(1, '/mnt/c/users/rhjva/imperial/pyscf/')
+# sys.path.insert(1, '/mnt/c/users/rhjva/imperial/pyscf/')
 from pyscf import gto, scf
 
 if __name__ == "__main__":

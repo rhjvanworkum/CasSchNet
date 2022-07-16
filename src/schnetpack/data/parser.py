@@ -178,15 +178,15 @@ def flip(v):
 def order_orbitals(ref, target):
     '''Reorder target molecular orbitals according to maximum overlap with ref.
     Orbitals phases are also adjusted to match ref.'''
-    Moverlap=np.dot(normalise_rows(ref),normalise_rows(target).T)
-    orb_order=np.argmax(abs(Moverlap),axis=1)
-    target = target[orb_order]
+    # Moverlap=np.dot(normalise_rows(ref), normalise_rows(target).T)
+    # orb_order=np.argmax(abs(Moverlap),axis=1)
+    # target = target[orb_order]
 
     for idx in range(target.shape[0]):
-        if np.dot(ref[idx], target[idx]) < 0:
-            target[idx] = -1 * target[idx]
+        if np.dot(ref[:, idx], target[:, idx]) < 0:
+            target[:, idx] = -1 * target[:, idx]
 
-    return target, orb_order
+    return target # , orb_order
 
 def correct_phase(mo_array: np.ndarray) -> None:
   """
@@ -256,19 +256,23 @@ def parse_molcas_calculations_canonical(geom_files, rasorb_files, hdf5_file_path
               atomic_properties="",
               molecular_properties=[{save_property: F.flatten(), 'overlap': all_overlap[idx], 'energies': all_energies[idx]}])
 
-def parse_pyscf_calculations(geom_files, mo_files, db_path, save_property='mo_coeffs', apply_phase_correction=False):
-  main_property = [np.load(mo_file)[save_property] for mo_file in mo_files]
+def parse_pyscf_calculations(geom_files, mo_files, db_path, save_property='mo_coeffs', apply_phase_correction=True):
+  all_mo_coeffs = [np.load(mo_file)['mo_coeffs'] for mo_file in mo_files]
+  all_fock = [np.load(mo_file)['F'] for mo_file in mo_files]
   all_guess = [np.load(mo_file)['guess'] for mo_file in mo_files]
   all_overlap = [np.load(mo_file)['S'] for mo_file in mo_files]
   
   if apply_phase_correction:
-    ref = main_property[0]
-    for idx, orbitals in enumerate(main_property):
-      main_property[idx] = order_orbitals(ref, orbitals)
+    for idx, orbitals in enumerate(all_mo_coeffs):
+      if idx > 0:
+        all_mo_coeffs[idx] = order_orbitals(all_mo_coeffs[idx-1], orbitals)
 
   for idx, geom_file in enumerate(geom_files):
     xyz_to_db(geom_file,
               db_path,
               idx=idx,
               atomic_properties="",
-              molecular_properties=[{save_property: main_property[idx].flatten(), 'hf_guess': all_guess[idx], 'overlap': all_overlap[idx]}])
+              molecular_properties=[{'mo_coeffs': all_mo_coeffs[idx].flatten(), 
+                                     'F': all_fock[idx].flatten(),
+                                     'hf_guess': all_guess[idx], 
+                                     'overlap': all_overlap[idx]}])

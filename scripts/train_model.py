@@ -35,10 +35,10 @@ def train_model(
       trn.ASENeighborList(cutoff=5.),
       trn.CastTo32()
     ],
-    property_units={property: 1.0, 'hf_guess': 1.0, 'overlap': 1.0},
+    property_units={property: 1.0, 'guess': 1.0, 'overlap': 1.0},
     num_workers=0,
     pin_memory=True,
-    load_properties=[property, 'hf_guess', 'overlap']
+    load_properties=[property, 'guess', 'overlap']
   )
 
   """ Initiating the Model """
@@ -85,7 +85,7 @@ def setup_training(experiment_name, batch_size, lr, split_file):
     raise ValueError("invalid experiment name")
   
   if experiment_name == 'ML_MO':
-    property = 'mo_coeffs'
+    property = 'mo_coeffs_adjusted'
     loss_type = ''
     loss_fn = mean_squared_error
   elif experiment_name == 'ML_U':

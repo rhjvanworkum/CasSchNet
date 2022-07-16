@@ -2,7 +2,7 @@ import torch
 import torch.optim
 import torchmetrics
 import src.schnetpack as spk
-from utils import Fake
+from models.utils import Fake
 
 def get_orbital_model(loss_fn, loss_type, lr, output_key, basis_set_size=36, cutoff=5.0):
     pairwise_distance = spk.atomistic.PairwiseDistances()
@@ -40,7 +40,7 @@ def get_orbital_model(loss_fn, loss_type, lr, output_key, basis_set_size=36, cut
     # Putting it in the Atomistic Task framework
     task = spk.AtomisticTask(
         model=nnp,
-        outputs=[output, Fake('overlap'), Fake('hf_guess')],
+        outputs=[output, Fake('overlap'), Fake('guess')],
         optimizer_cls=torch.optim.Adam,
         optimizer_args={"lr": lr},
         scheduler_cls=torch.optim.lr_scheduler.ReduceLROnPlateau,

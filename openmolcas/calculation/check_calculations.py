@@ -37,8 +37,8 @@ def get_mo_energies(orb_file):
 
 if __name__ == "__main__":
   geometries_base_path = '/mnt/c/users/rhjva/imperial/fulvene/geometries/geom_scan_2000/'
-  output_path = '/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_2000_canonical/'
-  n_geometries = 2000
+  output_path = '/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_200_ANO-S-VDZ/'
+  n_geometries = 200
 
   mo_energies = []
   s1_energies = []

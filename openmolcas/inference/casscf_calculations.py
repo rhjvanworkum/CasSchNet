@@ -4,7 +4,7 @@ import shutil
 import subprocess
 import h5py
 from infer_schnet import predict_guess, predict_guess_F
-from utils import write_coeffs_to_orb_file, read_log_file
+from models.utils import write_coeffs_to_orb_file, read_log_file
 
 def casscf_calculation(index, geom_file, output_dir, initial_guess_file=None):
   # make temp dir

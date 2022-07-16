@@ -12,15 +12,15 @@ def flip(v):
 def order_orbitals(ref, target):
     '''Reorder target molecular orbitals according to maximum overlap with ref.
     Orbitals phases are also adjusted to match ref.'''
-    # Moverlap=np.dot(normalise_rows(ref), normalise_rows(target).T)
-    # orb_order=np.argmax(abs(Moverlap),axis=1)
-    # target = target[orb_order]
+    Moverlap=np.dot(normalise_rows(ref), normalise_rows(target).T)
+    orb_order=np.argmax(abs(Moverlap),axis=1)
+    target = target[orb_order]
 
     for idx in range(target.shape[0]):
         if np.dot(ref[:, idx], target[:, idx]) < 0:
             target[:, idx] = -1 * target[:, idx]
 
-    return target # , orb_order
+    return target
 
 def correct_phase(mo_array: np.ndarray) -> None:
   """

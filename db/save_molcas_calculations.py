@@ -26,10 +26,13 @@ def parse_molcas_calculations(geom_files, rasorb_files, gssorb_files, hdf5_file_
     all_energies.append(energies)
   
   # apply phase correction
+  all_mo_coeffs_adjusted = []
   if apply_phase_correction:
     for idx, orbitals in enumerate(all_mo_coeffs):
       if idx > 0:
-        all_mo_coeffs[idx] = order_orbitals(all_mo_coeffs[idx-1], orbitals)
+        all_mo_coeffs_adjusted.append(order_orbitals(all_mo_coeffs[idx-1], orbitals))
+      else:
+        all_mo_coeffs_adjusted.append(orbitals)
 
   # get fock matrices
   all_fock = []
@@ -44,9 +47,10 @@ def parse_molcas_calculations(geom_files, rasorb_files, gssorb_files, hdf5_file_
               db_path,
               idx=idx,
               atomic_properties="",
-              molecular_properties=[{'mo_coeffs': all_mo_coeffs[idx].flatten(), 
+              molecular_properties=[{'mo_coeffs': all_mo_coeffs[idx].flatten(),
+                                     'mo_coeffs_adjusted': all_mo_coeffs_adjusted[idx].flatten(), 
                                      'F': all_fock[idx].flatten(),
-                                     'hf_guess': all_guess[idx], 
+                                     'guess': all_guess[idx], 
                                      'overlap': all_overlap[idx]}])
 
 def save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_geometries, db_path):
@@ -60,11 +64,12 @@ def save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_g
 
   with connect(db_path) as conn:
     conn.metadata = {"_distance_unit": 'angstrom',
-                    "_property_unit_dict": {"mo_coeffs": 1.0, "F": 1.0, "hf_guess": 1.0, "overlap": 1.0},
+                    "_property_unit_dict": {"mo_coeffs": 1.0, "mo_coeffs_adjusted": 1.0, "F": 1.0, "guess": 1.0, "overlap": 1.0},
                     "atomrefs": {
                       'mo_coeffs': [0.0 for _ in range(32)],
+                      'mo_coeffs_adjusted': [0.0 for _ in range(32)],
                       'F': [0.0 for _ in range(32)],
-                      'hf_guess': [0.0 for _ in range(32)],
+                      'guess': [0.0 for _ in range(32)],
                       'overlap': [0.0 for _ in range(32)]
                       }
                     }
@@ -72,7 +77,7 @@ def save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_g
 if __name__ == "__main__":
   geometry_base_dir = 'C:/users/rhjva/imperial/fulvene/geometries/geom_scan_2000/'
   calculations_base_dir = 'C:/Users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_2000/'
-  n_geometries = 199
+  n_geometries = 200
   db_path = './data/geom_scan_199_molcas_fock_noncan.db'
 
   save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_geometries, db_path)

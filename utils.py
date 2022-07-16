@@ -95,8 +95,6 @@ class MoleculeWise(nn.Module):
 #     activation=torch.tanh
 # )
 
-
-
 """ Fake model output module """
 class Fake(nn.Module):
 

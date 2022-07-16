@@ -1,4 +1,5 @@
-from db.utils import order_orbitals, read_in_orb_file
+from db.utils import order_orbitals
+from openmolcas.utils import read_in_orb_file
 from ase.db import connect
 import h5py
 import numpy as np

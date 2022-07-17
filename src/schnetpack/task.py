@@ -50,7 +50,7 @@ class ModelOutput(nn.Module):
             return 0.0
         if self.loss_type == 'reference':
             loss = self.loss_weight * self.loss_fn(
-                pred[self.name], target[self.target_property], target['hf_guess'], self.basis_set_size
+                pred[self.name], target[self.target_property], target['guess'], self.basis_set_size
             )
         else:
             loss = self.loss_weight * self.loss_fn(

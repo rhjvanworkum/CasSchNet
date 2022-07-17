@@ -2,6 +2,7 @@ import torch
 import torch.optim
 import torchmetrics
 import src.schnetpack as spk
+from src.schnetpack.task import ModelOutput
 from models.utils import Fake
 
 def get_orbital_model(loss_fn, loss_type, lr, output_key, basis_set_size=36, cutoff=5.0):
@@ -29,7 +30,7 @@ def get_orbital_model(loss_fn, loss_type, lr, output_key, basis_set_size=36, cut
         output_modules=[pred_module],
     )
 
-    output = spk.ModelOutput(
+    output = ModelOutput(
         name=output_key,
         loss_fn=loss_fn,
         loss_weight=1.0,

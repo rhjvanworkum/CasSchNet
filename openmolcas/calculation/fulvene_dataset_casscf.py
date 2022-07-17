@@ -8,7 +8,7 @@ This Calculation is performed by taking a set of converged orbital coeffs from t
 
 if __name__ == "__main__":
   geometries_base_path = '/mnt/c/users/rhjva/imperial/fulvene/geometries/geom_scan_200/'
-  output_path = '/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_200_ANO-S-MB/'
+  output_path = '/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_200_ANO-S-MB_canonical/'
   n_geometries = 200
 
   if not os.path.exists(output_path):

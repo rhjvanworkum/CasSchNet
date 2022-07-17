@@ -40,7 +40,7 @@ def parse_molcas_calculations(geom_files, rasorb_files, gssorb_files, hdf5_file_
     S = all_overlap[idx]
     energies = all_energies[idx]
     orbitals = all_mo_coeffs[idx]
-    all_fock.append(np.matmul(S, np.matmul(orbitals[idx].T, np.matmul(np.diag(energies), np.linalg.inv(orbitals[idx].T)))))
+    all_fock.append(np.matmul(S, np.matmul(orbitals.T, np.matmul(np.diag(energies), np.linalg.inv(orbitals.T)))))
 
   for idx, geom_file in enumerate(geom_files):
     xyz_to_db(geom_file,
@@ -53,13 +53,18 @@ def parse_molcas_calculations(geom_files, rasorb_files, gssorb_files, hdf5_file_
                                      'guess': all_guess[idx], 
                                      'overlap': all_overlap[idx]}])
 
-def save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_geometries, db_path):
+def save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_geometries, db_path, n_basis):
   geom_files = [geometry_base_dir + 'geometry_' + str(idx) + '.xyz' for idx in range(n_geometries)]
-  mo_files = [calculations_base_dir + 'geometry_' + str(idx) + '.npz' for idx in range(n_geometries)]
+  rasorb_files = [calculations_base_dir + 'geometry_' + str(idx) + '/CASSCF.RasOrb' for idx in range(n_geometries)]
+  gssorb_files = [calculations_base_dir + 'geometry_' + str(idx) + '/CASSCF.GssOrb' for idx in range(n_geometries)]
+  hdf5_file_path = [calculations_base_dir + 'geometry_' + str(idx) + '/CASSCF.rasscf.h5' for idx in range(n_geometries)]
 
   parse_molcas_calculations(geom_files=geom_files,
-                              mo_files=mo_files,
+                              rasorb_files=rasorb_files,
+                              gssorb_files=gssorb_files,
+                              hdf5_file_path=hdf5_file_path,
                               db_path=db_path,
+                              n_basis=n_basis,
                               apply_phase_correction=True)
 
   with connect(db_path) as conn:
@@ -75,9 +80,10 @@ def save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_g
                     }
 
 if __name__ == "__main__":
-  geometry_base_dir = 'C:/users/rhjva/imperial/fulvene/geometries/geom_scan_2000/'
-  calculations_base_dir = 'C:/Users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_2000/'
+  geometry_base_dir = 'C:/users/rhjva/imperial/fulvene/geometries/geom_scan_200/'
+  calculations_base_dir = 'C:/Users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_200_ANO-S-MB_canonical/'
   n_geometries = 200
-  db_path = './data/geom_scan_199_molcas_fock_noncan.db'
+  n_basis = 36
+  db_path = './data/geom_scan_200_molcas_ANO-S-MB_canonical.db'
 
-  save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_geometries, db_path)
+  save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_geometries, db_path, 36)

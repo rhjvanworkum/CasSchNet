@@ -10,12 +10,15 @@ def parse_pyscf_calculations(geom_files, mo_files, db_path, apply_phase_correcti
   all_fock = [np.load(mo_file)['F'] for mo_file in mo_files]
   all_guess = [np.load(mo_file)['guess'] for mo_file in mo_files]
   all_overlap = [np.load(mo_file)['S'] for mo_file in mo_files]
-  
+
   # apply phase correction
+  all_mo_coeffs_adjusted = []
   if apply_phase_correction:
     for idx, orbitals in enumerate(all_mo_coeffs):
       if idx > 0:
-        all_mo_coeffs[idx] = order_orbitals(all_mo_coeffs[idx-1], orbitals)
+        all_mo_coeffs_adjusted.append(order_orbitals(all_mo_coeffs[idx-1], orbitals))
+      else:
+        all_mo_coeffs_adjusted.append(orbitals)
 
   for idx, geom_file in enumerate(geom_files):
     xyz_to_db(geom_file,
@@ -23,8 +26,9 @@ def parse_pyscf_calculations(geom_files, mo_files, db_path, apply_phase_correcti
               idx=idx,
               atomic_properties="",
               molecular_properties=[{'mo_coeffs': all_mo_coeffs[idx].flatten(), 
+                                     'mo_coeffs_adjusted': all_mo_coeffs_adjusted[idx].flatten(), 
                                      'F': all_fock[idx].flatten(),
-                                     'hf_guess': all_guess[idx], 
+                                     'guess': all_guess[idx], 
                                      'overlap': all_overlap[idx]}])
 
 def save_pyscf_calculations_to_db(geometry_base_dir, calculations_base_dir, n_geometries, db_path):
@@ -38,11 +42,12 @@ def save_pyscf_calculations_to_db(geometry_base_dir, calculations_base_dir, n_ge
 
   with connect(db_path) as conn:
     conn.metadata = {"_distance_unit": 'angstrom',
-                    "_property_unit_dict": {"mo_coeffs": 1.0, "F": 1.0, "hf_guess": 1.0, "overlap": 1.0},
+                    "_property_unit_dict": {"mo_coeffs": 1.0, "mo_coeffs_adjusted": 1.0, "F": 1.0, "guess": 1.0, "overlap": 1.0},
                     "atomrefs": {
                       'mo_coeffs': [0.0 for _ in range(32)],
+                      "mo_coeffs_adjusted": [0.0 for _ in range(32)],
                       'F': [0.0 for _ in range(32)],
-                      'hf_guess': [0.0 for _ in range(32)],
+                      'guess': [0.0 for _ in range(32)],
                       'overlap': [0.0 for _ in range(32)]
                       }
                     }

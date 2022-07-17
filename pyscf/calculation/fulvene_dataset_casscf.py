@@ -45,12 +45,12 @@ if __name__ == "__main__":
     assert np.allclose(F, F.T)
 
     # save CASSCF result
-    # np.savez(output_path + 'geometry_' + str(i) + '.npz',
-    #          t_tot=t_tot,
-    #          imacro=imacro,
-    #          mo_coeffs=mo_coeffs,
-    #          guess=mo,
-    #          S=S,
-    #          F=F)
+    np.savez(output_path + 'geometry_' + str(i) + '.npz',
+             t_tot=t_tot,
+             imacro=imacro,
+             mo_coeffs=mo_coeffs,
+             guess=mo,
+             S=S,
+             F=F)
 
     print(i / n_geometries * 100, ' %')

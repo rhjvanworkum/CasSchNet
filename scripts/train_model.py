@@ -14,7 +14,7 @@ EXPERIMENTS = [
 ]
 
 CUTOFF = 5.0
-WAND_PROJECT = 'pyscf-runs'
+WAND_PROJECT = 'molcas-runs'
 
 
 def train_model(
@@ -101,12 +101,12 @@ def setup_training(experiment_name, batch_size, lr, split_file):
     
   
 if __name__ == "__main__":  
-  model_name = 'gs200_molcas_ANO-S-MB_canonical_ML_F'
-  database = './data/geom_scan_200_molcas_ANO-S-MB_canonical.db'
-  split_file = './data/geom_scan_200_molcas.npz'
+  model_name = 'gs199_molcas_ANO-S-VDZ_ML_MO'
+  database = './data/geom_scan_199_molcas_ANO-S-VDZ.db'
+  split_file = './data/geom_scan_199_molcas.npz'
   epochs = 100
-  basis_set_size = 36
+  basis_set_size = 66
   
-  experiment_name = 'ML_F'
+  experiment_name = 'ML_MO'
   
   setup_training(experiment_name, batch_size=16, lr=5e-4, split_file=split_file)

@@ -22,12 +22,14 @@ def order_orbitals(ref, target):
 
     return target
 
-def correct_phase(mo_array: np.ndarray) -> None:
+def correct_phase(ref, target) -> None:
   """
   mo_array -> List of coeffs for 1 MO among each calculation
   """
-  ref = mo_array[0]
+  new_target = target.copy()
+  
+  for idx in range(target.shape[0]):
+        if np.dot(ref[:, idx], target[:, idx]) < 0:
+            new_target[:, idx] = -1 * new_target[:, idx]
 
-  for idx in range(1, len(mo_array)):
-    if np.dot(mo_array[idx], ref) < 0:
-      mo_array[idx] = np.negative(mo_array[idx])
+  return new_target

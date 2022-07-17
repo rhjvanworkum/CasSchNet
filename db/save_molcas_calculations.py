@@ -1,4 +1,4 @@
-from db.utils import order_orbitals
+from db.utils import correct_phase, order_orbitals
 from openmolcas.utils import read_in_orb_file
 from ase.db import connect
 import h5py
@@ -10,6 +10,7 @@ def parse_molcas_calculations(geom_files, rasorb_files, gssorb_files, hdf5_file_
   # read in HDF5
   hdf5_files = [h5py.File(hdf5_file) for hdf5_file in hdf5_file_path]
   all_overlap = [hdf5.get('AO_OVERLAP_MATRIX')[:].reshape(-1, n_basis) for hdf5 in hdf5_files]
+  all_natural_orbs = [hdf5.get('MO_VECTORS')[:].reshape(-1, n_basis) for hdf5 in hdf5_files]
 
   # read in GUESS
   all_guess = []
@@ -17,7 +18,7 @@ def parse_molcas_calculations(geom_files, rasorb_files, gssorb_files, hdf5_file_
     orbitals, _ = read_in_orb_file(gssorb_file)
     all_guess.append(orbitals)
 
-  # read in MO COEFFS
+  # read in CANONICAL MO COEFFS
   all_mo_coeffs = []
   all_energies = []
   for rasorb_file in rasorb_files:
@@ -47,7 +48,7 @@ def parse_molcas_calculations(geom_files, rasorb_files, gssorb_files, hdf5_file_
               db_path,
               idx=idx,
               atomic_properties="",
-              molecular_properties=[{'mo_coeffs': all_mo_coeffs[idx].flatten(),
+              molecular_properties=[{'mo_coeffs': all_natural_orbs[idx].flatten(),
                                      'mo_coeffs_adjusted': all_mo_coeffs_adjusted[idx].flatten(), 
                                      'F': all_fock[idx].flatten(),
                                      'guess': all_guess[idx], 
@@ -81,9 +82,9 @@ def save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_g
 
 if __name__ == "__main__":
   geometry_base_dir = 'C:/users/rhjva/imperial/fulvene/geometries/geom_scan_200/'
-  calculations_base_dir = 'C:/Users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_200_ANO-S-MB_canonical/'
-  n_geometries = 200
-  n_basis = 36
-  db_path = './data/geom_scan_200_molcas_ANO-S-MB_canonical.db'
+  calculations_base_dir = 'C:/Users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_200_ANO-S-VDZ/'
+  n_geometries = 199
+  n_basis = 66
+  db_path = './data/geom_scan_199_molcas_ANO-S-VDZ.db'
 
-  save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_geometries, db_path, 36)
+  save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_geometries, db_path, n_basis=n_basis)

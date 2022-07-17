@@ -1,8 +1,8 @@
 import numpy as np
 
 if __name__ == "__main__":
-  name = 'geom_scan_200'
-  n = 200
+  name = 'geom_scan_199_molcas'
+  n = 199
   train_split = 0.9
   val_split = 0.1
   test_split = 0.0

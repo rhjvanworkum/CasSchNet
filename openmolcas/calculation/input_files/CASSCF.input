@@ -1,6 +1,6 @@
 &GATEWAY
 	coord=geom.xyz
-	basis=ANO-S-MB
+	basis=ANO-S-VDZ
 	group=NoSym
 &SEWARD
 &RASSCF

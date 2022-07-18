@@ -87,7 +87,6 @@ def predict_guess_F(model_path, geometry_path, n_mo, basis, cutoff=5.0):
   model = torch.load(model_path, map_location=device).to(device)
   model.eval()
 
-
   # predicting Fock matrix
   output = model(input)
   values = output['F'].detach().cpu().numpy()[0]

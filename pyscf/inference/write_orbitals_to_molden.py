@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(1, '/mnt/c/users/rhjva/imperial/pyscf/')
+# sys.path.insert(1, '/mnt/c/users/rhjva/imperial/pyscf/')
 from pyscf import gto, mcscf
 from pyscf.tools import molden
 

@@ -22,6 +22,7 @@ openmolcas/inference/CASSCF
 openmolcas/inference/CASSCF_ML
 
 wandb/
+temp/
 
 # new stuff
 data/*

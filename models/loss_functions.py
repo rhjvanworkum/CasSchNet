@@ -46,8 +46,14 @@ def total_mo_energy(pred, target, overlap):
 Loss Functions for learned MO coefficients - matrix C
 """
 # RMSE loss fn
-def root_mean_squared_error(pred, targets):
-    return torch.linalg.norm(pred - targets)
+def mean_squared_error(pred, targets, basis_set_size):
+    pred = pred.reshape(-1, basis_set_size, basis_set_size)
+    targets = targets.reshape(-1, basis_set_size, basis_set_size)
+    batch_size = pred.shape[0]
+    loss = 0
+    for i in range(batch_size):
+        loss += torch.sum(torch.square(targets[i].flatten() - pred[i].flatten())) / basis_set_size**2
+    return loss / batch_size
 
 # Weighted MSE given a set of weights
 def weighted_mse(pred, targets, weights):
@@ -77,10 +83,10 @@ def overlap_loss(pred, targets, refs, overlaps, indices):
 Loss functions for learned Orbital Transformation Matrix - matrix U
 """
 # MSE for learned orbital rotations
-def rotated_mse(pred, targets, refs, overlaps, indices):
-    pred = pred.reshape(-1, 36, 36)
-    targets = targets.reshape(-1, 36, 36)
-    refs = refs.reshape(-1, 36, 36)
+def rotated_mse(pred, targets, refs, basis_set_size):
+    pred = pred.reshape(-1, basis_set_size, basis_set_size)
+    targets = targets.reshape(-1, basis_set_size, basis_set_size)
+    refs = refs.reshape(-1, basis_set_size, basis_set_size)
     
     batch_size = pred.shape[0]
 
@@ -88,10 +94,9 @@ def rotated_mse(pred, targets, refs, overlaps, indices):
     for i in range(batch_size):
         X = 0.5 * (pred[i] - pred[i].T)
         preds = torch.matmul(torch.linalg.matrix_exp(X), refs[i])
-
         loss += torch.sum(torch.square(targets[i].flatten() - preds.flatten())) / len(preds.flatten()) 
 
-    return loss / (batch_size * 36)
+    return loss / batch_size
 
 # dot product for learned orbital rotations
 def rotated_dot_product(pred, targets, refs, overlaps, indices):
@@ -151,14 +156,13 @@ def rotated_projection(pred, targets, refs, indices, overlaps, guess_occs, conv_
 Loss functions for learned Hamiltonian/Fock operator matrices - H matrix
 """
 # MSE for hamiltonian
-def hamiltonian_mse(pred, targets):
-    pred = pred.reshape(-1, 36, 36)
-    targets = targets.reshape(-1, 36, 36)
+def hamiltonian_mse(pred, targets, basis_set_size):
+    pred = pred.reshape(-1, basis_set_size, basis_set_size)
+    targets = targets.reshape(-1, basis_set_size, basis_set_size)
 
     batch_size = pred.shape[0]
     loss = 0
     for i in range(batch_size):
-        # H = pred[i]
         H = 0.5 * (pred[i] + pred[i].T)
         loss += torch.sum(torch.square(targets[i].flatten() - H.flatten())) / len(targets[i].flatten())
     return loss / batch_size

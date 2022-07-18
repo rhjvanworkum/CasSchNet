@@ -23,6 +23,7 @@ class ModelOutput(nn.Module):
         loss_fn: Optional[nn.Module] = None,
         loss_weight: float = 1.0,
         loss_type: str = None,
+        basis_set_size: int = 36,
         metrics: Optional[Dict[str, Metric]] = None,
         target_property: Optional[str] = None,
     ):
@@ -40,19 +41,20 @@ class ModelOutput(nn.Module):
         self.target_property = target_property or name
         self.loss_fn = loss_fn
         self.loss_type = loss_type
+        self.basis_set_size = basis_set_size
         self.loss_weight = loss_weight
         self.metrics = nn.ModuleDict(metrics)
 
     def calculate_loss(self, pred, target):
         if self.loss_weight == 0 or self.loss_fn is None:
             return 0.0
-        if self.loss_type == 'energies':
+        if self.loss_type == 'reference':
             loss = self.loss_weight * self.loss_fn(
-                pred[self.name], target[self.target_property], target['overlap'], target['energies']
+                pred[self.name], target[self.target_property], target['guess'], self.basis_set_size
             )
         else:
             loss = self.loss_weight * self.loss_fn(
-                pred[self.name], target[self.target_property]
+                pred[self.name], target[self.target_property], self.basis_set_size
             )
         return loss
 
@@ -139,7 +141,7 @@ class AtomisticTask(pl.LightningModule):
         pred = self.predict_without_postprocessing(batch)
         loss = self.loss_fn(pred, targets)
 
-        self.log("train_loss", loss, on_step=True, on_epoch=False, prog_bar=False)
+        self.log("train_loss", loss, on_step=True, on_epoch=True, prog_bar=False)
         self.log_metrics(targets, pred, "train")
         return loss
 

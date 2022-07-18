@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(1, '/mnt/c/users/rhjva/imperial/pyscf/')
+# sys.path.insert(1, '/mnt/c/users/rhjva/imperial/pyscf/')
 
 from pyscf import gto, scf, mcscf
 
@@ -35,22 +35,22 @@ def casscf_calculation(geom_file, initial_guess='ao_min', basis='sto-6g'):
   weights = np.ones(n_states) / n_states
   mcas = myhf.CASSCF(ncas=6, nelecas=6).state_average(weights)
   mcas.conv_tol = 1e-8
+  
+  myhf.kernel()
 
   if initial_guess == 'ao_min':
-    myhf.kernel()
     guess = scf.hf.init_guess_by_minao(fulvene)
     # project initial guess
     mo = mcscf.project_init_guess(mcas, guess)
     mo = mcas.sort_mo([19, 20, 21, 22, 23, 24], mo)
   elif initial_guess == 'hf':
-    myhf.kernel()
     guess = myhf.mo_coeff
     # project initial guess
     mo = mcscf.project_init_guess(mcas, myhf.mo_coeff)
     mo = mcas.sort_mo([19, 20, 21, 22, 23, 24], mo)
   else:
-    # project initial guess
     guess = initial_guess
+    # project initial guess
     mo = mcscf.project_init_guess(mcas, initial_guess)
     mo = mcas.sort_mo([19, 20, 21, 22, 23, 24], mo)
 
@@ -58,12 +58,10 @@ def casscf_calculation(geom_file, initial_guess='ao_min', basis='sto-6g'):
   (imacro, _, _, fcivec, mo_coeffs, _) = mcas.kernel(mo)
   t_tot = time.time() - tstart
 
-  print(imacro)
-
   return t_tot, imacro, fcivec, mo_coeffs, guess, S
 
 
-def run_pyscf_calculations(method_name, geom_file, index, model_path=None):
+def run_pyscf_calculations(method_name, geom_file, index, basis):
   if method_name not in METHODS:
     raise ValueError("method name not found")
   
@@ -92,34 +90,25 @@ def run_pyscf_calculations(method_name, geom_file, index, model_path=None):
   
 
 if __name__ == "__main__":
-  prefix = '/mnt/c/users/rhjva/imperial/'
-  base_dir = prefix + 'fulvene/geometries/geom_scan_200/'
-  split_file = '../../data/geom_scan_200_aws.npz'
+  base_dir = '/home/ubuntu/fulvene/geometries/geom_scan_200/'
+  split_file = '../../data/geom_scan_200.npz'
   
-  # basises = ['sto_6g', '4-31G', '6-31G*']
-  # n_mos = [36, 66, 96]
-
-  basises = ['6-31G*']
-  n_mos = [96]
-
-  for n_mo, basis in zip(n_mos, basises):
-    models = ['geom_scan_200_' + basis + '_ML_MO', 'geom_scan_200_' + basis + '_ML_F']
-    if basis == '6-31G*':
-      models = ['geom_scan_200_6-31Gstar_ML_MO', 'geom_scan_200_6-31Gstar_ML_F']
-
-    method_names = ['ML_MO', 'ML_F']
-    outputs = ['geom_scan_200_ML_MO_' + basis, 'geom_scan_200_ML_F_' + basis]
+  models = ['geom_scan_200_4-31G_ML_U', 'geom_scan_200_4-31G_ML_F'] # ['', '', 'geom_scan_200_4-31G_ML_MO', 'geom_scan_200_4-31G_ML_U' 'geom_scan_200_4-31G_ML_F']
+  method_names = ['ML_U', 'ML_F'] #  ['ao_min', 'hf', 'ML_MO', 'ML_U', 'ML_F']
+  outputs = ['geom_scan_200_ML_U_4-31G', 'geom_scan_200_ML_F_4-31G'] # ['geom_scan_200_ao_min_4-31G', 'geom_scan_200_hf_4-31G', 'geom_scan_200_ML_MO_4-31G', 'geom_scan_200_ML_U_4-31G', 'geom_scan_200_ML_F_4-31G']
+  basis = '4-31G'
+  n_mo = 66
   
-    for idx, (model, method_name, output) in enumerate(zip(models, method_names, outputs)):
-      model_path = '../../checkpoints/pyscf-runs/' + model + '.pt'
-      output_dir = prefix + 'fulvene/casscf_calculations/pyscf-runs/' + output + '/'
+  for idx, (model, method_name, output) in enumerate(zip(models, method_names, outputs)):
+    model_path = '../../checkpoints/' + model + '.pt'
+    output_dir = '/home/ubuntu/fulvene/casscf_calculations/experiments/' + output + '/'
 
-      if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-      indices = np.load(split_file)['val_idx']
+    if not os.path.exists(output_dir):
+      os.makedirs(output_dir)
+    indices = np.load(split_file)['val_idx']
 
-      for i, index in enumerate(indices):
-        geom_file = base_dir + 'geometry_' + str(index) + '.xyz'
-        run_pyscf_calculations(method_name, geom_file, index, model_path=model_path)
-        
-        print(idx / len(models) * 100, '% total   ', i / len(indices) * 100, '% job')
+    for i, index in enumerate(indices):
+      geom_file = base_dir + 'geometry_' + str(index) + '.xyz'
+      run_pyscf_calculations(method_name, geom_file, index, basis=basis)
+      
+      print(idx / len(models) * 100, '% total   ', i / len(indices) * 100, '% job')

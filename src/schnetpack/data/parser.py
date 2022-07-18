@@ -94,181 +94,60 @@ def xyz_to_db(
     # build database from extended xyz
     extxyz_to_db(extxyz_path, db_path, idx, molecular_properties)
 
-
-def read_in_orb_file(orb_file : str):
-  orbitals = []
-  energies = []
-
-  append = False
-
-  with open(orb_file, 'r') as file:
-    # check for the ORB keyword in RasOrb file
-    while True:
-      line = file.readline()
-      if line[:4] == "#ORB":
-        break
-
-    # construct orbitals
-    while True:
-      line = file.readline()
-      # end of block
-      if '#' in line:
-        break
-      # add new orbital
-      elif '* ORBITAL' in line:
-        orbitals.append([])
-      # add coeffs
-      else:
-        for coeff in line.split(' '):
-          if len(coeff) > 0:
-            orbitals[-1].append(float(coeff.replace('\n', '')))
-
-    # get energies
-    while True:
-      line = file.readline()
-      # end of block
-      if append and '#' in line:
-        break
-      # append energies
-      if append:
-        for coeff in line.split(' '):
-          if len(coeff) > 0:
-            energies.append(float(coeff.replace('\n', '')))
-      # begin of block
-      if '* ONE ELECTRON ENERGIES' in line:
-        append = True
-
-  return np.array(orbitals), np.array(energies)
-
-def get_orbital_occupations(orb_file: str):
-  occupations = []
-
-  with open(orb_file, 'r') as file:
-    # check for the ORB keyword in RasOrb file
-    while True:
-      line = file.readline()
-      if line[:4] == "#OCC":
-        break
-
-    # construct orbitals
-    while True:
-      line = file.readline()
-      # end of block
-      if '#' in line:
-        break
-      elif '* OCCUPATION NUMBERS' in line:
-        continue
-      else:
-        for occ in line.split(' '):
-          print
-          if len(occ) > 0:
-            occupations.append(float(occ.replace('\n', '')))
-
-  return np.array(occupations)
-
-def normalise_rows(mat):
-    '''Normalise each row of mat'''
-    return np.array(tuple(map(lambda v: v / np.linalg.norm(v), mat)))
-
-def flip(v):
-    '''Returns 1 if max(abs(v))) is positive, and -1 if negative'''
-    maxpos=np.argmax(abs(v))
-    return v[maxpos]/abs(v[maxpos])
-
-def order_orbitals(ref, target):
-    '''Reorder target molecular orbitals according to maximum overlap with ref.
-    Orbitals phases are also adjusted to match ref.'''
-    Moverlap=np.dot(normalise_rows(ref),normalise_rows(target).T)
-    orb_order=np.argmax(abs(Moverlap),axis=1)
-    target = target[orb_order]
-
-    for idx in range(target.shape[0]):
-        if np.dot(ref[idx], target[idx]) < 0:
-            target[idx] = -1 * target[idx]
-
-    return target, orb_order
-
-def correct_phase(mo_array: np.ndarray) -> None:
-  """
-  mo_array -> List of coeffs for 1 MO among each calculation
-  """
-  ref = mo_array[0]
-
-  for idx in range(1, len(mo_array)):
-    if np.dot(mo_array[idx], ref) < 0:
-      mo_array[idx] = np.negative(mo_array[idx])
-
-def parse_molcas_calculations(geom_files, hdf5_file_path, db_path, save_property='MO_VECTORS', apply_phase_correction=False, n_basis=36):
-  hdf5_files = [h5py.File(hdf5_file) for hdf5_file in hdf5_file_path]
-  main_property = [hdf5.get(save_property)[:].reshape(-1, n_basis) for hdf5 in hdf5_files]
-  all_guess = [hdf5.get('MO_VECTORS')[:].reshape(-1, n_basis) for hdf5 in hdf5_files]
-  all_overlap = [hdf5.get('AO_OVERLAP_MATRIX')[:].reshape(-1, n_basis) for hdf5 in hdf5_files]
+# def parse_molcas_calculations(geom_files, hdf5_file_path, db_path, save_property='MO_VECTORS', apply_phase_correction=False, n_basis=36):
+#   hdf5_files = [h5py.File(hdf5_file) for hdf5_file in hdf5_file_path]
+#   main_property = [hdf5.get(save_property)[:].reshape(-1, n_basis) for hdf5 in hdf5_files]
+#   all_guess = [hdf5.get('MO_VECTORS')[:].reshape(-1, n_basis) for hdf5 in hdf5_files]
+#   all_overlap = [hdf5.get('AO_OVERLAP_MATRIX')[:].reshape(-1, n_basis) for hdf5 in hdf5_files]
   
-  if apply_phase_correction:
-    ref = main_property[0]
-    for idx, orbitals in enumerate(main_property):
-      main_property[idx] = order_orbitals(ref, orbitals)
+#   if apply_phase_correction:
+#     ref = main_property[0]
+#     for idx, orbitals in enumerate(main_property):
+#       main_property[idx] = order_orbitals(ref, orbitals)
 
-  for idx, geom_file in enumerate(geom_files):
-    xyz_to_db(geom_file,
-              db_path,
-              idx=idx,
-              atomic_properties="",
-              molecular_properties=[{save_property: main_property[idx].flatten(), 'hf_guess': all_guess[idx], 'overlap': all_overlap[idx]}])
+#   for idx, geom_file in enumerate(geom_files):
+#     xyz_to_db(geom_file,
+#               db_path,
+#               idx=idx,
+#               atomic_properties="",
+#               molecular_properties=[{save_property: main_property[idx].flatten(), 'hf_guess': all_guess[idx], 'overlap': all_overlap[idx]}])
 
-def parse_molcas_calculations_canonical(geom_files, rasorb_files, hdf5_file_path, db_path, save_property='F', n_basis=36, use_overlap=True):
-  hdf5_files = [h5py.File(hdf5_file) for hdf5_file in hdf5_file_path]
-  all_guess = [hdf5.get('MO_VECTORS')[:].reshape(-1, n_basis) for hdf5 in hdf5_files]
-  all_overlap = [hdf5.get('AO_OVERLAP_MATRIX')[:].reshape(-1, n_basis) for hdf5 in hdf5_files]
+# def parse_molcas_calculations_canonical(geom_files, rasorb_files, hdf5_file_path, db_path, save_property='F', n_basis=36, use_overlap=True):
+#   hdf5_files = [h5py.File(hdf5_file) for hdf5_file in hdf5_file_path]
+#   all_guess = [hdf5.get('MO_VECTORS')[:].reshape(-1, n_basis) for hdf5 in hdf5_files]
+#   all_overlap = [hdf5.get('AO_OVERLAP_MATRIX')[:].reshape(-1, n_basis) for hdf5 in hdf5_files]
 
-  all_orbitals = []
-  all_energies = []
-  for rasorb_file in rasorb_files:
-    orbitals, energies = read_in_orb_file(rasorb_file)
-    all_orbitals.append(orbitals)
-    all_energies.append(energies)
+#   all_orbitals = []
+#   all_energies = []
+#   for rasorb_file in rasorb_files:
+#     orbitals, energies = read_in_orb_file(rasorb_file)
+#     all_orbitals.append(orbitals)
+#     all_energies.append(energies)
 
-  # sort orbitals
-  # for idx in range(1, len(all_orbitals)):
-  #   all_orbitals[idx], orb_order = order_orbitals(all_orbitals[idx - 1], all_orbitals[idx])
-  #   all_energies[idx] = all_energies[idx][orb_order]
+#   # sort orbitals
+#   # for idx in range(1, len(all_orbitals)):
+#   #   all_orbitals[idx], orb_order = order_orbitals(all_orbitals[idx - 1], all_orbitals[idx])
+#   #   all_energies[idx] = all_energies[idx][orb_order]
 
-  #   overlap = np.zeros((36, 36))
-  #   S = all_overlap[idx]
-  #   for i, idxx in enumerate(orb_order):
-  #       overlap[i, :] = S[idxx, :]
-  #       overlap[:, i] = S[:, idxx]
-  #       all_overlap[idx] = overlap
+#   #   overlap = np.zeros((36, 36))
+#   #   S = all_overlap[idx]
+#   #   for i, idxx in enumerate(orb_order):
+#   #       overlap[i, :] = S[idxx, :]
+#   #       overlap[:, i] = S[:, idxx]
+#   #       all_overlap[idx] = overlap
   
-  for idx, geom_file in enumerate(geom_files):
-    # orbitals =
-    S = all_overlap[idx]
-    if use_overlap:
-      F = np.matmul(S, np.matmul(all_orbitals[idx].T, np.matmul(np.diag(energies), np.linalg.inv(all_orbitals[idx].T))))
-    else:
-      F = np.matmul(all_orbitals[idx].T, np.matmul(np.diag(energies), np.linalg.inv(all_orbitals[idx].T)))
+#   for idx, geom_file in enumerate(geom_files):
+#     # orbitals =
+#     S = all_overlap[idx]
+#     if use_overlap:
+#       F = np.matmul(S, np.matmul(all_orbitals[idx].T, np.matmul(np.diag(energies), np.linalg.inv(all_orbitals[idx].T))))
+#     else:
+#       F = np.matmul(all_orbitals[idx].T, np.matmul(np.diag(energies), np.linalg.inv(all_orbitals[idx].T)))
 
-    assert np.allclose(F, F.T)
+#     assert np.allclose(F, F.T)
 
-    xyz_to_db(geom_file,
-              db_path,
-              idx=idx,
-              atomic_properties="",
-              molecular_properties=[{save_property: F.flatten(), 'overlap': all_overlap[idx], 'energies': all_energies[idx]}])
-
-def parse_pyscf_calculations(geom_files, mo_files, db_path, save_property='mo_coeffs', apply_phase_correction=False):
-  main_property = [np.load(mo_file)[save_property] for mo_file in mo_files]
-  all_guess = [np.load(mo_file)['guess'] for mo_file in mo_files]
-  all_overlap = [np.load(mo_file)['S'] for mo_file in mo_files]
-  
-  if apply_phase_correction:
-    ref = main_property[0]
-    for idx, orbitals in enumerate(main_property):
-      main_property[idx] = order_orbitals(ref, orbitals)
-
-  for idx, geom_file in enumerate(geom_files):
-    xyz_to_db(geom_file,
-              db_path,
-              idx=idx,
-              atomic_properties="",
-              molecular_properties=[{save_property: main_property[idx].flatten(), 'hf_guess': all_guess[idx], 'overlap': all_overlap[idx]}])
+#     xyz_to_db(geom_file,
+#               db_path,
+#               idx=idx,
+#               atomic_properties="",
+#               molecular_properties=[{save_property: F.flatten(), 'overlap': all_overlap[idx], 'energies': all_energies[idx]}])

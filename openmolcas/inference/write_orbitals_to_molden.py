@@ -13,7 +13,7 @@ import numpy as np
 import subprocess
 
 from infer_schnet import predict_guess_F
-from utils import write_coeffs_to_orb_file
+from models.utils import write_coeffs_to_orb_file
 
 def CASCI_calculation(geom_file, initial_guess_file):
   # make temp dir

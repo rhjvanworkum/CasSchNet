@@ -1,9 +1,10 @@
 &GATEWAY
 	coord=geom.xyz
-	basis=6-31G*
+	basis=ANO-L-VTZ
 	group=NoSym
 &SEWARD
 &RASSCF
+	outorbitals=canonical
 	spin=1
 	nactel=6 0 0
 	inactive=18

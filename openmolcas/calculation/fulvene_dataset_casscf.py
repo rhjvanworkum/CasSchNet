@@ -7,8 +7,8 @@ This Calculation is performed by taking a set of converged orbital coeffs from t
 """
 
 if __name__ == "__main__":
-  geometries_base_path = '/mnt/c/users/rhjva/imperial/fulvene/geometries/geom_scan_200/'
-  output_path = '/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_200_ANO-S-VDZ/'
+  geometries_base_path = '/mnt/c/users/rhjva/imperial/fulvene/geometries/wigner_dist_200/'
+  output_path = '/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/wigner_dist_200_canonical/'
   n_geometries = 200
 
   if not os.path.exists(output_path):
@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     # copy files
     shutil.copy2('./input_files/CASSCF.input', geometry_path + 'CASSCF.input')
-    # shutil.copy2('./input_files/geom.orb', geometry_path + 'geom.orb')
+    shutil.copy2('./input_files/geom.orb', geometry_path + 'geom.orb')
     shutil.copy2(geometries_base_path + 'geometry_' + str(i) + '.xyz', geometry_path + 'geom.xyz')
 
     # execute OpenMolcas

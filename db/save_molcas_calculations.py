@@ -85,6 +85,6 @@ if __name__ == "__main__":
   calculations_base_dir = 'C:/Users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_200_ANO-S-VDZ/'
   n_geometries = 199
   n_basis = 66
-  db_path = './data/geom_scan_199_molcas_ANO-S-VDZ.db'
+  db_path = './data/geom_scan_199_molcas_ANO-S-VDZ_2.db'
 
   save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_geometries, db_path, n_basis=n_basis)

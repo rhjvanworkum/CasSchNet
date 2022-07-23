@@ -210,6 +210,7 @@ def run_molcas_calculations(method_name, geom_file, guess_orbs, S, index):
     (t_tot, imacro, fcivec, mo_coeffs, S) = casscf_calculation(index, geom_file, guess_file='temp.orb')
   elif method_name == 'ML_F':
     initial_guess = predict_guess_F(model_path=model_path, geometry_path=geom_file, S=S, basis=n_mo)
+    print(initial_guess)
     write_coeffs_to_orb_file(initial_guess.flatten(), example_guess_file, 'temp.orb', n=n_mo)
     (t_tot, imacro, fcivec, mo_coeffs, S) = casscf_calculation(index, geom_file, guess_file='temp.orb')
   
@@ -223,9 +224,14 @@ def run_molcas_calculations(method_name, geom_file, guess_orbs, S, index):
 
 if __name__ == "__main__":
   base_dir = '/mnt/c/users/rhjva/imperial/fulvene/geometries/geom_scan_200/'
-  calc_dir = '/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_200_ANO-S-MB/'
+  calc_dir = '/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_200_ANO-S-VDZ/'
   split_file = 'data/geom_scan_200_molcas.npz'
-  example_guess_file = 'openmolcas/calculation/input_files/geom.orb'
+  example_guess_file = 'openmolcas/calculation/input_files/geom_2.orb'
+
+  #####
+  #####
+  # DONT FORGET TO CHANGE THE CASSCF.input FILE
+  ####
 
   # experiment specific stuff
   # method_name = 'ML_MO'
@@ -233,10 +239,9 @@ if __name__ == "__main__":
   # output_dir = '/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/mol-runs/gs200_ANOSMB_canonical_' + method_name + '/'
   
   method_name = 'ML_F'
-  model_path = 'checkpoints/gs199_molcas_ANO-S-MB_canonical_ML_F.pt'
-  output_dir = '/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/mol-runs/gs199_ANOSMB_canonical_' + method_name + '/'
-  
-  n_mo = 36
+  model_path = 'checkpoints/gs199_molcas_ANO-S-VDZ_ML_F.pt'
+  output_dir = '/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/molcas-runs/gs199_ANOVDZ_' + method_name + '_2/'
+  n_mo = 66
 
   if not os.path.exists(output_dir):
     os.makedirs(output_dir)

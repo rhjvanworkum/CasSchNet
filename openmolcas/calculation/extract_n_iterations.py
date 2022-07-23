@@ -30,7 +30,7 @@ def read_log_file(file, read_iterations=True):
   return rasscf_timing, wall_timing, n_iterations
 
 if __name__ == "__main__":
-  output_path = '/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_200_ANO-S-MB/'
+  output_path = '/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_200_ANO-S-VDZ/'
   split_file = 'data/geom_scan_200_molcas.npz'
 
   n_iterations = []
@@ -40,4 +40,4 @@ if __name__ == "__main__":
     _, _, n = read_log_file(geometry_path + 'calc.log')
     n_iterations.append(n)
 
-  np.save('temp/gs200_ANOSMB_standard.npy', np.array(n_iterations))
+  np.save('temp/gs200_ANOSVDZ_standard.npy', np.array(n_iterations))

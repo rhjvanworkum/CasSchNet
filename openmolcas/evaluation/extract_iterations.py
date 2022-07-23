@@ -31,12 +31,12 @@ def extract_results(split_file, base_dir):
 
 if __name__ == "__main__":
   split_file = 'data/geom_scan_200_molcas.npz'
-  dirs = ['/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/mol-runs/gs199_ANOSMB_canonical_ML_F/',]
-          # '/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/mol-runs/gs200_ANOSMB_canonical_ML_U/',
-          # '/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/mol-runs/gs200_ANOSMB_canonical_ML_F/']
-  names = ['temp/gs199_ANOSMB_canonical_ML_F.npy',]
-          #  'temp/gs200_ANOSMB_canonical_ML_U.npy',
-          #  'temp/gs200_ANOSMB_canonical_ML_F.npy']
+  dirs = ['/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/molcas-runs/gs199_ANOVDZ_ML_F/',]
+          # '/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/molcas-runs/gs199_ANOVDZ_ML_F/'
+          # '/mnt/c/users/rhjva/imperial/fulvene/openmolcas_calculations/molcas-runs/gs199_ANOSMB_ML_F/']
+  names = ['temp/gs199_ANOSVDZ_ML_F.npy']
+          #  'temp/gs199_ANOSVDZ_ML_F.npy']
+          #  'temp/gs199_ANOSMB_ML_F.npy']
 
   for dir, name in zip(dirs, names):
     results = extract_results(split_file, dir)

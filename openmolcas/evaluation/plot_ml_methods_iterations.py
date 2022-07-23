@@ -51,8 +51,7 @@
 
 import numpy as np
 
-for file in ['gs200_ANOSMB_standard.npy', 'gs200_ANOSMB_ML_MO.npy', 'gs200_ANOSMB_ML_U.npy', 'gs200_ANOSMB_ML_F.npy', 
-  'gs200_ANOSMB_canonical_ML_MO.npy', 'gs200_ANOSMB_canonical_ML_U.npy', 'gs200_ANOSMB_canonical_ML_F.npy', 
-  'gs200_ANOSMB_299test_ML_F.npy', 'gs199_ANOSMB_ML_F.npy', 'gs199_ANOSMB_canonical_ML_F.npy']:
+for file in ['gs199_ANOSMB_standard.npy', 'gs199_ANOSMB_ML_MO.npy', 'gs199_ANOSMB_ML_U.npy', 'gs199_ANOSMB_ML_F.npy',
+             'gs200_ANOSVDZ_standard.npy', 'gs199_ANOSVDZ_ML_MO.npy', 'gs199_ANOSVDZ_ML_F.npy', 'tests/gs200_ANOSMB_ML_U.npy']:
   data = np.load('temp/' + file)
   print(np.mean(data), np.std(data))

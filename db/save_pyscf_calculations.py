@@ -16,7 +16,7 @@ def parse_pyscf_calculations(geom_files, mo_files, db_path, apply_phase_correcti
   if apply_phase_correction:
     for idx, orbitals in enumerate(all_mo_coeffs):
       if idx > 0:
-        all_mo_coeffs_adjusted.append(order_orbitals(all_mo_coeffs[idx-1], orbitals))
+        all_mo_coeffs_adjusted.append(order_orbitals(all_mo_coeffs[idx-1].T, orbitals.T).T)
       else:
         all_mo_coeffs_adjusted.append(orbitals)
 

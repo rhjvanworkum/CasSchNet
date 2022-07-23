@@ -6,6 +6,7 @@ from pyscf import gto, scf, mcscf
 import numpy as np
 import os
 import time
+import scipy
 from infer_schnet import predict_guess, predict_guess_rotating, predict_guess_F
 
 CUTOFF = 5.0
@@ -13,10 +14,9 @@ CUTOFF = 5.0
 # cp -r /home/ubuntu/.local/lib/python3.6/site-packages/pyscf 
 
 METHODS = [
-  'ao_min',
+  'huckel',
   'hf',
   'ML_MO',
-  'ML_U',
   'ML_F'
 ]
 
@@ -38,8 +38,8 @@ def casscf_calculation(geom_file, initial_guess='ao_min', basis='sto-6g'):
   
   myhf.kernel()
 
-  if initial_guess == 'ao_min':
-    guess = scf.hf.init_guess_by_minao(fulvene)
+  if initial_guess == 'huckel':
+    guess = scf.hf.init_guess_by_huckel(fulvene)
     # project initial guess
     mo = mcscf.project_init_guess(mcas, guess)
     mo = mcas.sort_mo([19, 20, 21, 22, 23, 24], mo)
@@ -58,31 +58,34 @@ def casscf_calculation(geom_file, initial_guess='ao_min', basis='sto-6g'):
   (imacro, _, _, fcivec, mo_coeffs, _) = mcas.kernel(mo)
   t_tot = time.time() - tstart
 
-  return t_tot, imacro, fcivec, mo_coeffs, guess, S
+  F = mcas.get_fock(mo_coeff=mo, ci=fcivec)
+  mo_e, _ = scipy.linalg.eigh(F, S)
+
+  return t_tot, imacro, mo_e, mo_coeffs, guess, S
 
 
 def run_pyscf_calculations(method_name, geom_file, index, basis):
   if method_name not in METHODS:
     raise ValueError("method name not found")
   
-  if method_name == 'ao_min':
-    (t_tot, imacro, fcivec, mo_coeffs, guess, S) = casscf_calculation(geom_file, initial_guess='ao_min', basis=basis)
+  if method_name == 'huckel':
+    (t_tot, imacro, mo_e, mo_coeffs, guess, S) = casscf_calculation(geom_file, initial_guess='hf', basis=basis)
   elif method_name == 'hf':
-    (t_tot, imacro, fcivec, mo_coeffs, guess, S) = casscf_calculation(geom_file, initial_guess='hf', basis=basis)
+    (t_tot, imacro, mo_e, mo_coeffs, guess, S) = casscf_calculation(geom_file, initial_guess='hf', basis=basis)
   elif method_name == 'ML_MO':
     initial_guess = predict_guess(model_path=model_path, geometry_path=geom_file, n_mo=n_mo, basis=basis)
-    (t_tot, imacro, fcivec, mo_coeffs, guess, S) = casscf_calculation(geom_file, initial_guess=initial_guess, basis=basis)
-  elif method_name == 'ML_U':
-    initial_guess = predict_guess_rotating(model_path=model_path, geometry_path=geom_file, n_mo=n_mo, basis=basis)
-    (t_tot, imacro, fcivec, mo_coeffs, guess, S) = casscf_calculation(geom_file, initial_guess=initial_guess, basis=basis)
+    (t_tot, imacro, mo_e, mo_coeffs, guess, S) = casscf_calculation(geom_file, initial_guess=initial_guess, basis=basis)
   elif method_name == 'ML_F':
     initial_guess = predict_guess_F(model_path=model_path, geometry_path=geom_file, n_mo=n_mo, basis=basis)
-    (t_tot, imacro, fcivec, mo_coeffs, guess, S) = casscf_calculation(geom_file, initial_guess=initial_guess, basis=basis)
+    (t_tot, imacro, mo_e, mo_coeffs, guess, S) = casscf_calculation(geom_file, initial_guess=initial_guess, basis=basis)
+  # elif method_name == 'ML_U':
+  #   initial_guess = predict_guess_rotating(model_path=model_path, geometry_path=geom_file, n_mo=n_mo, basis=basis)
+  #   (t_tot, imacro, fcivec, mo_coeffs, guess, S) = casscf_calculation(geom_file, initial_guess=initial_guess, basis=basis)
   
   np.savez(output_dir + 'geometry_' + str(index) + '.npz',
           t_tot=t_tot,
           imacro=imacro,
-          fcivec=fcivec,
+          mo_e=mo_e,
           mo_coeffs=mo_coeffs,
           guess=guess,
           S=S)

@@ -61,9 +61,9 @@ def run_molcas_calculations(args):
     (t_tot, imacro, fcivec, mo_coeffs, S) = casscf_calculation(index, geom_file, guess_file=tmpfile.name)
   elif method_name == 'ML_F':
     initial_guess = predict_guess_F(model_path=model_path, geometry_path=geom_file, S=S, basis=n_mo)
-    tmpfile = tempfile.NamedTemporaryFile(suffix='.orb')
-    write_coeffs_to_orb_file(initial_guess.flatten(), example_guess_file, tmpfile.name, n=n_mo)
-    (t_tot, imacro, fcivec, mo_coeffs, S) = casscf_calculation(index, geom_file, guess_file=tmpfile.name)
+    print(initial_guess)
+    write_coeffs_to_orb_file(initial_guess.flatten(), example_guess_file, 'temp.orb', n=n_mo)
+    (t_tot, imacro, fcivec, mo_coeffs, S) = casscf_calculation(index, geom_file, guess_file='temp.orb')
   
   np.savez(output_dir + 'geometry_' + str(index) + '.npz',
           t_tot=t_tot,
@@ -80,7 +80,12 @@ if __name__ == "__main__":
   base_dir = prefix + 'fulvene/geometries/geom_scan_200/'
   calc_dir = prefix + 'fulvene/openmolcas_calculations/geom_scan_200_ANO-L-VTZ/'
   split_file = 'data/geom_scan_200_molcas.npz'
-  example_guess_file = 'openmolcas/calculation/input_files/geom.orb'
+  example_guess_file = 'openmolcas/calculation/input_files/geom_2.orb'
+
+  #####
+  #####
+  # DONT FORGET TO CHANGE THE CASSCF.input FILE
+  ####
 
   # experiment specific stuff  
   method_name = 'ML_MO'

@@ -75,6 +75,7 @@ def train_model(
                                       default_root_dir='./test/',
                                       max_epochs=epochs,
                                       # accelerator='gpu',
+                                      deterministic=True,
                                       devices=1)
 
   logging.info("Start training")
@@ -101,12 +102,12 @@ def setup_training(experiment_name, batch_size, lr, split_file):
     
   
 if __name__ == "__main__":  
-  model_name = 'gs199_molcas_ANO-S-VDZ_ML_MO'
-  database = './data/geom_scan_199_molcas_ANO-S-VDZ.db'
+  model_name = 'gs199_molcas_ANO-S-VDZ_ML_F_2'
+  database = './data/geom_scan_199_molcas_ANO-S-VDZ_2.db'
   split_file = './data/geom_scan_199_molcas.npz'
   epochs = 100
   basis_set_size = 66
   
-  experiment_name = 'ML_MO'
+  experiment_name = 'ML_F'
   
   setup_training(experiment_name, batch_size=16, lr=5e-4, split_file=split_file)

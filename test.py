@@ -1,17 +1,32 @@
-import h5py
-from openmolcas.utils import read_in_orb_file
-
-folder = 'C:/Users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_200_ANO-S-MB/geometry_40/'
-
-mo_vecs = h5py.File(folder + 'CASSCF.rasscf.h5').get('MO_VECTORS')[:].reshape(-1, 36)
-
-orbs, _ = read_in_orb_file(folder + 'CASSCF.RasOrb')
+from ase.db import connect
 
 import numpy as np
+import h5py
+import matplotlib.pyplot as plt
 
-print(mo_vecs - orbs)
+db_path = './data/geom_scan_199_molcas_ANO-S-MB.db'
 
-assert np.allclose(mo_vecs, orbs)
+all_F = []
+
+with connect(db_path) as conn:
+  guess = conn.get(1).data['guess']
+  final = conn.get(1).data['mo_coeffs'].reshape(-1, 36)
+  U = np.matmul(final, np.linalg.inv(guess))
+
+  print(np.matmul(U, U.T))
+
+
+
+  # assert np.allclose(conn.get(1).data['mo_coeffs'], h5py.File('C:/Users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_200_ANO-S-VDZ/geometry_0/CASSCF.rasscf.h5').get('MO_VECTORS')[:])
+
+# for i in np.random.choice(np.arange(199), 50):
+#   plt.plot(np.arange(199), [F[i] for F in all_F])
+#   plt.show()
+# import numpy as np
+
+# print(mo_vecs - orbs)
+
+# assert np.allclose(mo_vecs, orbs)
 
 
 

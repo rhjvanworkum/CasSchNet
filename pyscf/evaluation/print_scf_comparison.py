@@ -26,13 +26,13 @@ data = [
   [3.7, 5.45, 4.75]
 ]
 
-labels = ['HF', 'ML_MO', 'ML_F']
+labels = ['Hartee-Fock', 'ML_MO', 'ML_F']
 
 for dat, label in zip(data, labels):
-  plt.plot(np.arange(len(dat)), dat, label=label)
+  plt.plot([36, 66, 96], dat, label=label)
 
 plt.xlabel('basis set')
 plt.ylabel('avg_iterations')
-plt.xticks(np.arange(3), ['STO-6G', '4-31G', '6-31G*'])
+plt.xticks([36, 66, 96], ['STO-6G (N = 36)', '4-31G (N = 66)', '6-31G* (N = 96)'])
 plt.legend()
 plt.show()

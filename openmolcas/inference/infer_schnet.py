@@ -1,8 +1,3 @@
-import sys
-sys.path.insert(1, '/mnt/c/users/rhjva/imperial/pyscf/')
-
-from pyscf import gto, scf, mcscf
-
 import numpy as np
 import torch
 import schnetpack as spk

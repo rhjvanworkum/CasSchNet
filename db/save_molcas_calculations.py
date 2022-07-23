@@ -56,9 +56,9 @@ def parse_molcas_calculations(geom_files, rasorb_files, gssorb_files, hdf5_file_
 
 def save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_geometries, db_path, n_basis):
   geom_files = [geometry_base_dir + 'geometry_' + str(idx) + '.xyz' for idx in range(n_geometries)]
-  rasorb_files = [calculations_base_dir + 'geometry_' + str(idx) + '/CASSCF.RasOrb' for idx in range(n_geometries)]
-  gssorb_files = [calculations_base_dir + 'geometry_' + str(idx) + '/CASSCF.GssOrb' for idx in range(n_geometries)]
-  hdf5_file_path = [calculations_base_dir + 'geometry_' + str(idx) + '/CASSCF.rasscf.h5' for idx in range(n_geometries)]
+  rasorb_files = [calculations_base_dir + 'geometry_' + str(idx) + '/geom' + str(idx) + '.RasOrb' for idx in range(n_geometries)]
+  gssorb_files = [calculations_base_dir + 'geometry_' + str(idx) + '/geom' + str(idx) + '.GssOrb' for idx in range(n_geometries)]
+  hdf5_file_path = [calculations_base_dir + 'geometry_' + str(idx) + '/geom' + str(idx) + '.rasscf.h5' for idx in range(n_geometries)]
 
   parse_molcas_calculations(geom_files=geom_files,
                               rasorb_files=rasorb_files,
@@ -81,10 +81,11 @@ def save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_g
                     }
 
 if __name__ == "__main__":
-  geometry_base_dir = 'C:/users/rhjva/imperial/fulvene/geometries/geom_scan_200/'
-  calculations_base_dir = 'C:/Users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_200_ANO-S-VDZ/'
+  prefix = '/home/ubuntu/'
+  geometry_base_dir = prefix + 'fulvene/geometries/geom_scan_200/'
+  calculations_base_dir = prefix + 'fulvene/openmolcas_calculations/geom_scan_200_ANO-L-VTZ/'
   n_geometries = 199
-  n_basis = 66
-  db_path = './data/geom_scan_199_molcas_ANO-S-VDZ.db'
+  n_basis = 174
+  db_path = './data/geom_scan_199_molcas_ANO-L-VTZ.db'
 
   save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_geometries, db_path, n_basis=n_basis)

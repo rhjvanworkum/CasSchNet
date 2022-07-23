@@ -2,8 +2,6 @@ import os
 import numpy as np
 import time
 
-import sys
-# sys.path.insert(1, '/mnt/c/users/rhjva/imperial/pyscf/')
 from pyscf import gto, mcscf, lib
 
 if __name__ == "__main__":
@@ -18,7 +16,7 @@ if __name__ == "__main__":
 
     # make MOL
     mol = gto.M(atom=geometries_base_path + "geometry_" + str(i) + ".xyz",
-                basis="STO-6G",
+                basis="6-31G*",
                 spin=0)
     
     # run HF

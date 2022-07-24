@@ -36,15 +36,16 @@ def get_mo_energies(orb_file):
   return mo_energies
 
 if __name__ == "__main__":
-  geometries_base_path = '/home/ubuntu/fulvene/geometries/geom_scan_200/'
-  output_path = '/home/ubuntu/fulvene/openmolcas_calculations/geom_scan_200_ANO-L-VTZ_old/'
+  prefix = '/mnt/c/users/rhjva/imperial'
+  geometries_base_path = prefix + '/fulvene/geometries/wigner_dist_200/'
+  output_path = prefix + '/fulvene/openmolcas_calculations/wigner_dist_200_canonical/'
   n_geometries = 200
 
   mo_energies = []
   s1_energies = []
   for i in range(n_geometries):
     geometry_path = output_path + 'geometry_' + str(i) + '/'
-    mo_energies.append(get_mo_energies(geometry_path + 'geom' + str(i) + '.RasOrb'))
+    mo_energies.append(get_mo_energies(geometry_path + 'CASSCF.RasOrb'))
     s1_energies.append(get_s1_energy(geometry_path + 'calc.log'))
 
   # plot MO ENERGIES

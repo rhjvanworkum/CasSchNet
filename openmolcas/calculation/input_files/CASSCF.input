@@ -5,6 +5,7 @@
 &SEWARD
 &RASSCF
 	outorbitals=canonical
+	fileorb=geom.orb
 	spin=1
 	nactel=6 0 0
 	inactive=18

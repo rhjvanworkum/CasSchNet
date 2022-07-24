@@ -20,6 +20,7 @@ docs/tutorials/qm9tut
 openmolcas/inference/CASCI
 openmolcas/inference/CASSCF
 openmolcas/inference/CASSCF_ML
+openmolcas/calculations/plots
 
 wandb/
 temp/

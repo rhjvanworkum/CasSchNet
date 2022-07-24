@@ -81,10 +81,10 @@ def save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_g
                     }
 
 if __name__ == "__main__":
-  geometry_base_dir = 'C:/users/rhjva/imperial/fulvene/geometries/geom_scan_200/'
-  calculations_base_dir = 'C:/Users/rhjva/imperial/fulvene/openmolcas_calculations/geom_scan_200_ANO-S-VDZ/'
-  n_geometries = 199
-  n_basis = 66
-  db_path = './data/geom_scan_199_molcas_ANO-S-VDZ_2.db'
+  geometry_base_dir = 'C:/users/rhjva/imperial/fulvene/geometries/wigner_dist_200/'
+  calculations_base_dir = 'C:/Users/rhjva/imperial/fulvene/openmolcas_calculations/wigner_dist_200_canonical/'
+  n_geometries = 200
+  n_basis = 36
+  db_path = './data/wigner_dist_200_ANO-S-MB.db'
 
   save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, n_geometries, db_path, n_basis=n_basis)

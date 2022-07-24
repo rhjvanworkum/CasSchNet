@@ -28,8 +28,8 @@ def predict_guess(model_path, geometry_path, n_mo, basis, cutoff=5.0):
 
   # infer the model
   output = model(input)
-  values = output['mo_coeffs'].detach().cpu().numpy()[0]
-  return values.reshape(-1, n_mo)
+  values = output['mo_coeffs_adjusted'].detach().cpu().numpy()[0]
+  return values.reshape(n_mo, n_mo)
 
 """ Predict guess using model infering Orbital rotations """
 def predict_guess_rotating(model_path, geometry_path, n_mo, basis, cutoff=5.0):
@@ -101,14 +101,15 @@ def predict_guess_F(model_path, geometry_path, n_mo, basis, cutoff=5.0):
 
   # F -> MO coeffs
   S = myscf.get_ovlp(mol)
-  e_s, U = np.linalg.eig(S)
-  diag_s = np.diag(e_s ** -0.5)
-  X = np.dot(U, np.dot(diag_s, U.T))
+  _, C = scipy.linalg.eigh(F, S)
+  # e_s, U = np.linalg.eig(S)
+  # diag_s = np.diag(e_s ** -0.5)
+  # X = np.dot(U, np.dot(diag_s, U.T))
 
-  F_prime = np.dot(X.T, np.dot(F, X))
-  evals_prime, C_prime = np.linalg.eig(F_prime)
-  indices = evals_prime.argsort()
-  C_prime = C_prime[:, indices]
-  C = np.dot(X, C_prime)
+  # F_prime = np.dot(X.T, np.dot(F, X))
+  # evals_prime, C_prime = np.linalg.eig(F_prime)
+  # indices = evals_prime.argsort()
+  # C_prime = C_prime[:, indices]
+  # C = np.dot(X, C_prime)
 
   return C

@@ -22,6 +22,8 @@ openmolcas/inference/CASSCF
 openmolcas/inference/CASSCF_ML
 openmolcas/calculations/plots
 
+pyscf/inference/tmp*
+
 wandb/
 temp/
 

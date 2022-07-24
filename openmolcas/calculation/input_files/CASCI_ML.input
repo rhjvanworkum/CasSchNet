@@ -4,6 +4,7 @@
 	group=NoSym
 &SEWARD
 &RASSCF
+	fileorb=geom.orb
 	outorbitals=canonical
 	CIonly
 	spin=1

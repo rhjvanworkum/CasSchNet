@@ -45,7 +45,11 @@ def train_model(
   model = get_orbital_model(loss_fn=loss_fn, loss_type=loss_type, lr=lr, output_key=property, basis_set_size=basis_set_size)
 
   if initial_model_path is not None:
-    model.load_state_dict(torch.load(initial_model_path))
+    state_dict = torch.load(initial_model_path).state_dict()
+    for key in list(state_dict.keys()):
+      state_dict['model.' + key] = state_dict.pop(key)
+    # print(state_dict.items()[0])
+    model.load_state_dict(state_dict)
 
   """ Just for testing purposes """
   # dataset.setup()

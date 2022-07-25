@@ -30,16 +30,17 @@ def read_log_file(file, read_iterations=True):
   return rasscf_timing, wall_timing, n_iterations
 
 if __name__ == "__main__":
-  output_path = '/home/ubuntu/fulvene/openmolcas_calculations/MD_trajectories_05_01_random/'
-  split_file = 'data/MD_trajectories_05_01_random.npz'
+  output_path = '/home/ubuntu/fulvene/openmolcas_calculations/MD_trajectory_1/'
+  # split_file = 'data/MD_trajectories_05_01_random.npz'
 
   n_iterations = []
 
-  for i in np.load(split_file)['val_idx']:
+  # for i in np.load(split_file)['val_idx']:  
+  for i in range(200):
     geometry_path = output_path + 'geometry_' + str(i) + '/'
     _, _, n = read_log_file(geometry_path + 'calc.log')
     n_iterations.append(n)
 
   n_iterations = np.array(n_iterations)
-  print(np.mean(n_iterations), np.std(n_iterations))
+  print(n_iterations)
   # np.save('temp/gs200_ANOSVDZ_standard.npy', np.array(n_iterations))

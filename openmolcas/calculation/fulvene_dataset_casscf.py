@@ -31,17 +31,17 @@ def run_molcas_calculation(args):
 if __name__ == "__main__":
   prefix = '/home/ubuntu/'
   geometries_base_path = prefix + 'fulvene/geometries/MD_trajectories_5_01/'
-  output_path = prefix + 'fulvene/openmolcas_calculations/MD_trajectories_05_01_random/'
-  N_JOBS = 4
+  output_path = prefix + 'fulvene/openmolcas_calculations/MD_trajectory_1/'
+  N_JOBS = 6
 
   if not os.path.exists(output_path):
     os.makedirs(output_path)
 
-  indices = np.load(prefix + 'schnetpack/data/MD_trajectories_05_01_random.npz')['val_idx']
+  # indices = np.load(prefix + 'schnetpack/data/MD_trajectories_05_01_random.npz')['val_idx']
+  # parallel_args = [()]
 
-  # n_geometries = 200
-  # parallel_args = [(geometries_base_path, i) for i in range(n_geometries)]
-  parallel_args = [(geometries_base_path, i) for i in indices]
+  n_geometries = 200
+  parallel_args = [(geometries_base_path, i) for i in range(n_geometries)]
 
   pool = multiprocessing.Pool(N_JOBS)
   for result in tqdm(pool.imap(run_molcas_calculation, parallel_args), total=len(parallel_args)):

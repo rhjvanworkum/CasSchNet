@@ -8,7 +8,7 @@ from src.schnetpack.data.parser import xyz_to_db
 
 def parse_molcas_calculations(geom_files, rasorb_files, gssorb_files, hdf5_file_path, db_path, n_basis, apply_phase_correction=True):
   # read in HDF5
-  hdf5_files = [h5py.File(hdf5_file) for hdf5_file in hdf5_file_path]
+  hdf5_files = [h5py.File(hdf5_file, 'r') for hdf5_file in hdf5_file_path]
   all_overlap = [hdf5.get('AO_OVERLAP_MATRIX')[:].reshape(-1, n_basis) for hdf5 in hdf5_files]
   all_natural_orbs = [hdf5.get('MO_VECTORS')[:].reshape(-1, n_basis) for hdf5 in hdf5_files]
 
@@ -56,9 +56,9 @@ def parse_molcas_calculations(geom_files, rasorb_files, gssorb_files, hdf5_file_
 
 def save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, geometry_idxs, db_path, n_basis):
   geom_files = [geometry_base_dir + 'geometry_' + str(idx) + '.xyz' for idx in geometry_idxs]
-  rasorb_files = [calculations_base_dir + 'geometry_' + str(idx) + '/geom' + str(idx) + '.RasOrb' for idx in geometry_idxs]
-  gssorb_files = [calculations_base_dir + 'geometry_' + str(idx) + '/geom' + str(idx) + '.GssOrb' for idx in geometry_idxs]
-  hdf5_file_path = [calculations_base_dir + 'geometry_' + str(idx) + '/geom' + str(idx) + '.rasscf.h5' for idx in geometry_idxs]
+  rasorb_files = [calculations_base_dir + 'geometry_' + str(idx) + '/CASSCF.RasOrb' for idx in geometry_idxs]
+  gssorb_files = [calculations_base_dir + 'geometry_' + str(idx) + '/CASSCF.GssOrb' for idx in geometry_idxs]
+  hdf5_file_path = [calculations_base_dir + 'geometry_' + str(idx) + '/CASSCF.rasscf.h5' for idx in geometry_idxs]
 
   parse_molcas_calculations(geom_files=geom_files,
                               rasorb_files=rasorb_files,
@@ -85,7 +85,7 @@ if __name__ == "__main__":
   geometry_base_dir = prefix + 'fulvene/geometries/geom_scan_200/'
   calculations_base_dir = prefix + 'fulvene/openmolcas_calculations/geom_scan_200_ANO-L-VTZ/'
   geometry_idxs = np.arange(199)
-  n_basis = 66
+  n_basis = 36
   db_path = './data/geom_scan_199_molcas_ANO-S-VDZ_2.db'
 
   save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, geometry_idxs, db_path, n_basis=n_basis)

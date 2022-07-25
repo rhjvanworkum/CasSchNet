@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 labels = ['Huckel', 'ML_MO', 'ML_U', 'ML_F']
 
 data = [
-  (14.45, 1.20),
-  (13.95, 2.09),
-  (12.85, 1.82),
-  (11.0, 0.32)
+  (21.46, 6.49),
+  (42.3, 13.94),
+  (19.34, 6.29),
+  (19.0, 5.60)
 ]
 
 
@@ -17,7 +17,7 @@ plt.errorbar(np.arange(len(data)),
                            fmt='o',
                            capsize=5)
 
-plt.title('N CASSCF iterations on geom_scan_200 validation set (OpenMolcas)')
+plt.title('N CASSCF iterations on MD trajectory validation set (OpenMolcas)')
 plt.xlabel('Method')
 plt.ylabel('N iterations')
 plt.xticks(np.arange(len(data)), labels)

@@ -1,0 +1,133 @@
+import os
+import shutil
+from typing import List
+from db.generate_split_files import generate_split
+from models.inference import predict_guess_F
+import numpy as np
+import h5py
+
+from db.save_molcas_calculations import save_molcas_calculations_to_db
+from openmolcas.utils import read_log_file, write_coeffs_to_orb_file
+from scripts.train_model import train_model
+
+METHODS = [
+  'standard',
+  'previous_geom',
+  'ML_F'
+]
+
+def casscf_calculation(output_dir: str, index: int, 
+                       geom_file: str, guess_file: str = None) -> int:
+  """
+  :param output_dir: path to folder to store openmolcas results
+  :param index: geometry index for the geometry the calculation is performed on
+  :param geom_file: path to geometry file
+  :param guess_file: path to file containing guess orbitals
+  """
+  # make temp dir
+  dir_path = output_dir + 'geometry_' + str(index) + '/'
+  if not os.path.exists(dir_path):
+    os.makedirs(dir_path)
+  # copy files there
+  shutil.copy2(geom_file, dir_path + 'geom.xyz')
+  shutil.copy2('openmolcas/calculation/input_files/CASSCF.input', dir_path + 'CASSCF.input')
+  shutil.copy2(guess_file, dir_path + 'geom.orb')
+  # run openmolcas
+  if not os.path.exists(dir_path + 'temp/'):
+    os.makedirs(dir_path + 'temp/')
+  os.system('cd ' + dir_path + ' && WorkDir=./temp/ /opt/molcas/bin/pymolcas CASSCF.input > calc.log')
+  shutil.rmtree(dir_path + 'temp/')
+  # read results back
+  _, _, imacro = read_log_file(dir_path + 'calc.log')
+  return imacro
+
+def update_ml_model(current_model_path: str, geometry_base_dir: str,
+                    calculations_base_dir: str, new_geometry_idxs: List[int], update_number: int, n_basis: int = 36) -> str:
+  """
+  Finetunes a ML model during MD trajectory with CASSCF results on new geometries
+  :param current_model_path: path to current torch model
+
+  """
+  # save calculations to db
+  db_path = calculations_base_dir + 'db/database_' + str(update_number) + '.db'
+  save_molcas_calculations_to_db(geometry_base_dir, calculations_base_dir, new_geometry_idxs, db_path=db_path, n_basis=n_basis)
+  # generate split
+  split_file = calculations_base_dir + 'split/split_' + str(update_number) + '.npz'  
+  generate_split(train_split=1.00, val_split=0.0, test_split=0.0, n=len(new_geometry_idxs), save_path=split_file)
+  # train new model
+  new_model_path = calculations_base_dir + 'models/model_' + str(update_number)
+  train_model(
+    initial_model_path=current_model_path,
+    save_path=new_model_path,
+    epochs=40,
+    database_path=db_path,
+    split_file=split_file
+  )
+
+  return new_model_path
+
+def run_md_trajectory_ml(geometry_base_dir: str, geometry_idxs: List[int], calculations_base_dir: str, working_dir: str,
+                         initial_model_path: str, example_guess_file: str, n_update: int = 50, n_basis: int = 36) -> List[int]:
+  total_steps = len(geometry_idxs)
+  total_n_iterations = []
+
+  update_step = 0
+  current_model_path = initial_model_path
+  for step, geometry_idx in enumerate(geometry_idxs):
+    # geometry_path
+    geometry_path = geometry_base_dir + 'geometry_' + str(geometry_idx) + '.xyz'
+    # perform calculation
+    initial_guess = predict_guess_F(model_path=current_model_path, 
+                                    geometry_path=geometry_path, 
+                                    S=h5py.File(calculations_base_dir + 'geometry_' + str(geometry_idx) + '/CASSCF.rasscf.h5').get('AO_OVERLAP_MATRIX')[:].reshape(-1, n_basis),
+                                    basis=n_basis)
+    write_coeffs_to_orb_file(initial_guess.flatten(), example_guess_file, 'temp.orb', n=n_basis)
+    n_iterations = casscf_calculation(output_dir=working_dir, index=geometry_idx, geom_file=geometry_path, guess_file='temp.orb')
+    total_n_iterations.append(n_iterations)
+    # perform update if necessary
+    if step % n_update == 0:
+      new_geometry_idxs = geometry_idx[np.arange(total_steps)[update_step*n_update:(update_step+1)*n_update]]
+      current_model_path = update_ml_model(current_model_path=current_model_path,
+                                           geometry_base_dir=geometry_base_dir,
+                                           calculations_base_dir=working_dir,
+                                           new_geometry_idxs=new_geometry_idxs,
+                                           update_number=update_step)
+    
+  return total_n_iterations
+
+def run_md_trajectory(geometry_base_dir: str, geometry_idxs: List[int], working_dir: str, initial_guess_file: str) -> List[int]:
+  total_steps = len(geometry_idxs)
+  total_n_iterations = []
+
+  for step, geometry_idx in enumerate(geometry_idxs):
+    # geometry_path
+    geometry_path = geometry_base_dir + 'geometry_' + str(geometry_idx) + '.xyz'
+    # perform calculation
+    if step == 0:
+      guess_file = initial_guess_file
+    else:
+      guess_file = working_dir + 'geometry_' + str(geometry_idxs[step - 1]) + '/CASSCF.Rasorb'
+    n_iterations = casscf_calculation(output_dir=working_dir, index=geometry_idx, geom_file=geometry_path, guess_file=guess_file)
+    total_n_iterations.append(n_iterations)
+    
+  return total_n_iterations
+
+
+if __name__ == "__main__":
+  prefix = '/home/ubuntu'
+  geometry_base_dir = ''
+  geometry_idxs = []
+  calculations_base_dir = ''
+  working_dir = ''
+  initial_model_path = ''
+  example_guess_file = ''
+  initial_guess_file = ''
+  n_update = 50
+  n_basis = 36
+
+  # run ML MD trajectory
+  run_md_trajectory_ml(geometry_base_dir, geometry_idxs, calculations_base_dir, working_dir,
+                       initial_model_path, example_guess_file, n_update, n_basis)
+
+  # # run previous geom MD trajectory
+  # run_md_trajectory(geometry_base_dir, geometry_idxs, working_dir, initial_guess_file)

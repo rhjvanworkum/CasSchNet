@@ -37,15 +37,7 @@ def casscf_calculation(index, geom_file, guess_file=None):
 
   # read results back
   t_tot, _, imacro = read_log_file(dir_path + 'calc.log')
-  file = h5py.File(dir_path + 'CASSCF.rasscf.h5')
-  # fcivec = file.get('CI_VECTORS')[:]
-  # mo_coeffs = file.get('MO_VECTORS')[:].reshape(-1, 36)
-  # S = file.get('AO_OVERLAP_MATRIX')[:].reshape(-1, 36)
-  fcivec = None
-  mo_coeffs = None
-  S = None
-
-  return t_tot, imacro, fcivec, mo_coeffs, S
+  return imacro
 
 def run_molcas_calculations(args):
   method_name, geom_file, model_path, guess_orbs, S, index = args

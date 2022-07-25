@@ -22,6 +22,7 @@ def get_orbital_model(loss_fn, loss_type, lr, output_key, basis_set_size=36, cut
     pred_module = spk.atomistic.Atomwise(
         output_key=output_key,
         n_in=representation.n_atom_basis,
+        n_layers=2,
         n_out=basis_set_size**2
     )
     nnp = spk.model.NeuralNetworkPotential(

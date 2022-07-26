@@ -1,15 +1,11 @@
-import sys
-# sys.path.insert(1, '/mnt/c/users/rhjva/imperial/pyscf/')
-
 from pyscf import gto, scf, mcscf
-
 import numpy as np
 import os
 import time
 import scipy
 import multiprocessing
 from tqdm import tqdm
-from infer_schnet import predict_guess, predict_guess_rotating, predict_guess_F
+from models.inference import predict_guess, predict_guess_F
 
 CUTOFF = 5.0
 
@@ -19,6 +15,13 @@ METHODS = [
   'ML_MO',
   'ML_F'
 ]
+
+def calculate_overlap_matrix(geometry_path: str, basis: str) -> np.ndarray:
+  mol = gto.M(atom=geometry_path,
+              basis=basis,
+              spin=0)
+  myscf = mol.RHF()
+  return myscf.get_ovlp(mol)
 
 def casscf_calculation(geom_file, initial_guess='ao_min', basis='sto-6g'):
 
@@ -48,14 +51,8 @@ def casscf_calculation(geom_file, initial_guess='ao_min', basis='sto-6g'):
     mo = mcas.sort_mo([19, 20, 21, 22, 23, 24], mo)
   else:
     guess = initial_guess
-    # mo = np.ascontiguousarray(guess, dtype=np.float32)
-    # project initial guess
     mo = mcscf.project_init_guess(mcas, guess)
     mo = mcas.sort_mo([19, 20, 21, 22, 23, 24], mo)
-    # assert np.allclose(initial_guess, mo)
-    # mo = guess
-
-  # print(mo.flags)
 
   tstart = time.time()
   (imacro, _, _, fcivec, mo_coeffs, mo_energy) = mcas.kernel(mo)
@@ -79,10 +76,11 @@ def run_pyscf_calculations(args):
   elif method_name == 'hf':
     (t_tot, imacro, mo_e, mo_coeffs, guess, S) = casscf_calculation(geom_file, initial_guess='hf', basis=basis)
   elif method_name == 'ML_MO':
-    initial_guess = predict_guess(model_path=model_path, geometry_path=geom_file, n_mo=n_mo, basis=basis)
+    initial_guess = predict_guess(model_path=model_path, geometry_path=geom_file, basis=n_mo)
     (t_tot, imacro, mo_e, mo_coeffs, guess, S) = casscf_calculation(geom_file, initial_guess=initial_guess, basis=basis)
   elif method_name == 'ML_F':
-    initial_guess = predict_guess_F(model_path=model_path, geometry_path=geom_file, n_mo=n_mo, basis=basis)
+    overlap_matrix = calculate_overlap_matrix(geometry_path=geometry_path, basis=basis)
+    initial_guess = predict_guess_F(model_path=model_path, geometry_path=geom_file, S=overlap_matrix, basis=n_mo)
     (t_tot, imacro, mo_e, mo_coeffs, guess, S) = casscf_calculation(geom_file, initial_guess=initial_guess, basis=basis)
   
   np.savez(output_dir + 'geometry_' + str(index) + '.npz',

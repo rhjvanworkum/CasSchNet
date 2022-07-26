@@ -139,9 +139,11 @@ def run_md_trajectory(geometry_base_dir: str, geometry_idxs: List[int], working_
     if step == 0:
       guess_file = initial_guess_file
     else:
-      guess_file = working_dir + 'geometry_' + str(geometry_idxs[step - 1]) + '/CASSCF.Rasorb'
+      guess_file = working_dir + 'geometry_' + str(geometry_idxs[step - 1]) + '/CASSCF.RasOrb'
     n_iterations = casscf_calculation(output_dir=working_dir, index=geometry_idx, geom_file=geometry_path, guess_file=guess_file)
     total_n_iterations.append(n_iterations)
+
+    print('progress: ', step / len(geometry_idxs) * 100, '%')
     
   return total_n_iterations
 
@@ -154,7 +156,7 @@ if __name__ == "__main__":
   geometry_base_dir = prefix + 'fulvene/geometries/MD_trajectories_5_01/'
   geometry_idxs = np.arange(200)
   calculations_base_dir = prefix + 'fulvene/openmolcas_calculations/MD_trajectory_1/'
-  working_dir = prefix + 'fulvene/openmolcas_calculations/MD_ML_F_200/'
+  working_dir = prefix + 'fulvene/openmolcas_calculations/MD_prev_geometry/'
   initial_model_path = prefix + 'schnetpack/checkpoints/wd200_molcas_ANO-S-MB_ML_F.pt'
   example_guess_file = prefix + 'schnetpack/openmolcas/calculation/input_files/geom.orb'
   initial_guess_file = example_guess_file
@@ -170,10 +172,10 @@ if __name__ == "__main__":
     os.makedirs(working_dir)
 
   # run ML MD trajectory
-  total_n_iterations = run_md_trajectory_ml(geometry_base_dir, geometry_idxs, calculations_base_dir, working_dir,
-                       initial_model_path, example_guess_file, n_update, n_basis)
+  # total_n_iterations = run_md_trajectory_ml(geometry_base_dir, geometry_idxs, calculations_base_dir, working_dir,
+  #                      initial_model_path, example_guess_file, n_update, n_basis)
 
   # # run previous geom MD trajectory
-  # run_md_trajectory(geometry_base_dir, geometry_idxs, working_dir, initial_guess_file)
+  run_md_trajectory(geometry_base_dir, geometry_idxs, working_dir, initial_guess_file)
 
   print(total_n_iterations)

@@ -49,7 +49,7 @@ def predict_guess_rotating(model_path, geometry_path, guess_orbs, basis, cutoff=
 
   return np.matmul(U, guess_orbs)
 
-""" Predict guess using model infering the Hamiltonian matrix """
+""" Predict guess using model infering a (effective) Fock matrix """
 def predict_guess_F(model_path, geometry_path, S, basis, cutoff=5.0):
   if torch.cuda.is_available():
     device = torch.device('cuda')

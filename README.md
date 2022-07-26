@@ -1,3 +1,32 @@
+# CasSchNet - Complete Active Space SchNet for accelerating Excited State Molecular Dynamics 
+This is a fork of the SchNetPack repository, utilized for the work of "CasSchNet - Complete Active Space SchNet for accelerating Excited State Molecular Dynamics".
+
+#### Structure
+- ./db/ -> module for saving PySCF / OpenMolcas data to an ASE db, in order to train SchNetPack models
+- ./models/ -> module for training & inference of CasSchNet models ML_ML, ML_U & ML_F
+- ./openmolcas/ -> module for using python to perform & interact with OpenMolcas calculations
+- ./pyscf/ -> module for using python to perform & interact with PySCF calculations
+- ./scripts/ -> additional scripts used to perform actions related to CasSchNet
+
+#### Setup
+##### SchNetPack
+For the setup of SchNetPack see the instructions below
+
+##### PySCF
+PySCF can be installed using pip
+
+##### OpenMolcas
+OpenMolcas needs to be installed separately to this repository
+
+##### SHARC
+SHARC is included in this repository as a git submodule
+
+additionally, run `source env.sh` in order to set the correct environment variables
+
+---------------------------------------------------
+---------------------------------------------------
+
+
 # SchNetPack - Deep Neural Networks for Atomistic Systems
 [![Build Status](https://travis-ci.com/atomistic-machine-learning/schnetpack.svg?branch=master)](https://travis-ci.com/atomistic-machine-learning/schnetpack)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)

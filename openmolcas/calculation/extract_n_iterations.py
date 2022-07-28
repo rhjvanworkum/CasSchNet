@@ -30,7 +30,7 @@ def read_log_file(file, read_iterations=True):
   return rasscf_timing, wall_timing, n_iterations
 
 if __name__ == "__main__":
-  output_path = '/home/ubuntu/fulvene/openmolcas_calculations/MD_trajectory_1/'
+  output_path = '/home/ubuntu/fulvene/openmolcas_calculations/MD_prev_geometry/'
   # split_file = 'data/MD_trajectories_05_01_random.npz'
 
   n_iterations = []

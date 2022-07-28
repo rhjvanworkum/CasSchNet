@@ -7,12 +7,6 @@ from models.utils import Fake
 
 def get_orbital_model(loss_fn, loss_type, lr, output_key, basis_set_size=36, cutoff=5.0):
     pairwise_distance = spk.atomistic.PairwiseDistances()
-    # representation = spk.representation.SchNet(
-    #     n_atom_basis=64, # 256
-    #     n_interactions=5, # 6
-    #     radial_basis=spk.nn.GaussianRBF(n_rbf=20, cutoff=cutoff),
-    #     cutoff_fn=spk.nn.CosineCutoff(cutoff),
-    # )
     representation = spk.representation.PaiNN(
         n_atom_basis=64,
         n_interactions=5,

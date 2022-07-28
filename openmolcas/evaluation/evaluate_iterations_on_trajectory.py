@@ -176,6 +176,6 @@ if __name__ == "__main__":
   #                      initial_model_path, example_guess_file, n_update, n_basis)
 
   # # run previous geom MD trajectory
-  run_md_trajectory(geometry_base_dir, geometry_idxs, working_dir, initial_guess_file)
+  total_n_iterations = run_md_trajectory(geometry_base_dir, geometry_idxs, working_dir, initial_guess_file)
 
   print(total_n_iterations)

@@ -79,8 +79,9 @@ class DeltaNeuralNetworkPotential(AtomisticModel):
         n_atoms_in_batch = inputs['_atomic_numbers'].shape[1]
         inputs['scalar_representation'] = inputs['scalar_representation'].reshape(n_atoms_in_batch, -1)
 
-        inputs['F'] = initial_inputs['F']
-        inputs['mo_coeffs_adjusted'] = initial_inputs['mo_coeffs_adjusted']
+        if 'F' and 'mo_coeffs_adjusted' in list(inputs.keys()):
+            inputs['F'] = initial_inputs['F']
+            inputs['mo_coeffs_adjusted'] = initial_inputs['mo_coeffs_adjusted']
 
         for m in self.output_modules:
             inputs = m(inputs)

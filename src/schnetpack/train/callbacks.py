@@ -78,17 +78,17 @@ class ModelCheckpoint(BaseModelCheckpoint):
             current = torch.tensor(float("inf" if self.mode == "min" else "-inf"))
 
         if current == self.best_model_score:
-            if self.trainer.training_type_plugin.should_rank_save_checkpoint:
-                # remove references to trainer and data loaders to avoid pickle error in ddp
-                model = self.pl_module.model
-                pp_status = model.do_postprocessing
+            # if self.trainer.training_type_plugin.should_rank_save_checkpoint:
+            # remove references to trainer and data loaders to avoid pickle error in ddp
+            model = self.pl_module.model
+            pp_status = model.do_postprocessing
 
-                if self.do_postprocessing:
-                    model.do_postprocessing = True
+            if self.do_postprocessing:
+                model.do_postprocessing = True
 
-                model.eval()
-                torch.save(model, self.inference_path)
-                model.train()
+            model.eval()
+            torch.save(model, self.inference_path)
+            model.train()
 
-                if self.do_postprocessing:
-                    model.do_postprocessing = pp_status
+            if self.do_postprocessing:
+                model.do_postprocessing = pp_status

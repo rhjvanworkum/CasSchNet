@@ -36,7 +36,6 @@ __all__ = [
     "load_dataset",
 ]
 
-
 class AtomsDataFormat(Enum):
     """Enumeration of data formats"""
 
@@ -193,6 +192,7 @@ class ASEAtomsData(BaseAtomsData):
         subset_idx: Optional[List[int]] = None,
         property_units: Optional[Dict[str, str]] = None,
         distance_unit: Optional[str] = None,
+        is_delta: bool = False
     ):
         """
         Args:
@@ -250,21 +250,30 @@ class ASEAtomsData(BaseAtomsData):
                 )
                 self._units[prop] = unit
 
+        self.is_delta = is_delta
+
     def __len__(self) -> int:
         if self.subset_idx:
-            return len(self.subset_idx)
+            return len(self.subset_idx) - self.is_delta * 2
 
         with connect(self.datapath, use_lock_file=False) as conn:
-            return conn.count()
+            return conn.count() - self.is_delta * 2
 
     def __getitem__(self, idx: int) -> Dict[str, torch.Tensor]:
-        if self.subset_idx:
-            idx = self.subset_idx[idx]
+        # TODO: change this back again
+        # if self.subset_idx:
+        #     idx = self.subset_idx[idx]
+        # print(idx)
 
-        props = self._get_properties(
-            self.conn, idx, self.load_properties, self.load_structure
-        )
-        props = self._apply_transforms(props)
+        if self.is_delta:
+            props = self._get_properties_delta(
+                self.conn, idx, self.load_properties, self.load_structure
+            )
+        else:
+            props = self._get_properties(
+                self.conn, idx, self.load_properties, self.load_structure
+            )
+            props = self._apply_transforms(props)
 
         return props
 
@@ -321,6 +330,44 @@ class ASEAtomsData(BaseAtomsData):
                     load_properties=load_properties,
                     load_structure=load_structure,
                 )
+
+    def _get_properties_delta(
+        self, conn, idx: int, load_properties: List[str], load_structure: bool
+    ):
+        rows = [conn.get(idx + 1), conn.get(idx + 2)]
+        properties_list = []
+
+        # extract properties
+        # TODO: can the copies be avoided?
+        for row in rows:
+            properties = {}
+            properties[structure.idx] = torch.tensor([idx])
+            for pname in load_properties:
+                properties[pname] = (
+                    torch.tensor(row.data[pname].copy()) * self.conversions[pname]
+                )
+
+            Z = row["numbers"].copy()
+            properties[structure.n_atoms] = torch.tensor([Z.shape[0]])
+
+            if load_structure:
+                properties[structure.Z] = torch.tensor(Z, dtype=torch.long)
+                properties[structure.position] = (
+                    torch.tensor(row["positions"].copy()) * self.distance_conversion
+                )
+                properties[structure.cell] = (
+                    torch.tensor(row["cell"][None].copy()) * self.distance_conversion
+                )
+                properties[structure.pbc] = torch.tensor(row["pbc"])
+
+            properties = self._apply_transforms(properties)
+            properties_list.append(properties)
+
+        properties = {}
+        for key in properties_list[0].keys():
+            properties[key] = torch.stack((properties_list[0][key], properties_list[1][key]))
+
+        return properties
 
     def _get_properties(
         self, conn, idx: int, load_properties: List[str], load_structure: bool
@@ -555,7 +602,7 @@ def load_dataset(datapath: str, format: AtomsDataFormat, **kwargs) -> BaseAtomsD
         **kwargs: arguments for passed to AtomsData init
 
     """
-    if format is AtomsDataFormat.ASE:
+    if format is AtomsDataFormat.ASE.value:
         dataset = ASEAtomsData(datapath=datapath, **kwargs)
     else:
         raise AtomsDataError(f"Unknown format: {format}")

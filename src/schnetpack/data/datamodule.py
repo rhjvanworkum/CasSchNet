@@ -21,6 +21,8 @@ from schnetpack.data import (
     calculate_stats,
 )
 
+from src.schnetpack.data.atoms import load_dataset
+
 
 __all__ = ["AtomsDataModule", "AtomsDataModuleError"]
 
@@ -58,6 +60,7 @@ class AtomsDataModule(pl.LightningDataModule):
         data_workdir: Optional[str] = None,
         cleanup_workdir_stage: Optional[str] = "test",
         pin_memory: Optional[bool] = None,
+        is_delta: bool = False
     ):
         """
         Args:
@@ -118,6 +121,10 @@ class AtomsDataModule(pl.LightningDataModule):
         self._val_dataset = None
         self._test_dataset = None
 
+        self.is_delta = is_delta
+        # TODO:  REMOVE THIS
+        self.format = 'ase'
+
     @property
     def train_transforms(self):
         """Optional transforms (or collection of transforms) you can apply to train dataset."""
@@ -175,6 +182,7 @@ class AtomsDataModule(pl.LightningDataModule):
                 self.format,
                 property_units=self.property_units,
                 distance_unit=self.distance_unit,
+                is_delta=self.is_delta
             )
 
             # generate partitions if needed
@@ -341,6 +349,7 @@ class AtomsDataModule(pl.LightningDataModule):
             num_workers=self.num_workers,
             shuffle=True,
             pin_memory=self.use_pin_memory(),
+            is_delta=self.is_delta
         )
 
     def val_dataloader(self) -> AtomsLoader:
@@ -349,6 +358,7 @@ class AtomsDataModule(pl.LightningDataModule):
             batch_size=self.val_batch_size,
             num_workers=self.num_val_workers,
             pin_memory=self.use_pin_memory(),
+            is_delta=self.is_delta
         )
 
     def test_dataloader(self) -> AtomsLoader:
@@ -357,6 +367,7 @@ class AtomsDataModule(pl.LightningDataModule):
             batch_size=self.test_batch_size,
             num_workers=self.num_test_workers,
             pin_memory=self.use_pin_memory(),
+            is_delta=self.is_delta
         )
 
     def use_pin_memory(self) -> bool:

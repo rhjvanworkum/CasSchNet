@@ -10,9 +10,9 @@ CUTOFF = 5.0
 WAND_PROJECT = 'molcas-runs'
 
 if __name__ == "__main__":  
-  model_name = 'wd200_molcas_ANO-S-MB_ML_F_large'
-  database_path = './data/wigner_dist_200_ANO-S-MB.db'
-  split_file = './data/wigner_dist_200.npz'
+  model_name = 'gs199_delta_test'
+  database_path = './data/geom_scan_199_molcas_ANO-S-MB.db'
+  split_file = './data/geom_scan_199_molcas.npz'
   epochs = 100
   lr=5e-4
   batch_size=16
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     loss_type = ''
     loss_fn = hamiltonian_mse
     
-  _ = train_model(save_path='./checkpoints/' + model_name + '.pt',
+  train_model(save_path='./checkpoints/' + model_name + '.pt',
                   property=property, 
                   loss_type=loss_type, 
                   loss_fn=loss_fn, 
@@ -45,4 +45,5 @@ if __name__ == "__main__":
                   basis_set_size=basis_set_size,
                   database_path=database_path,
                   split_file=split_file,
-                  use_wandb=True) 
+                  use_wandb=False,
+                  is_delta=True) 

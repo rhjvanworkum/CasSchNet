@@ -58,6 +58,51 @@ def _atoms_collate_fn(batch):
     return coll_batch
 
 
+def _atoms_collate_double_fn(batch):
+    elem = batch[0]
+    idx_keys = {structure.idx_i, structure.idx_j, structure.idx_i_triples}
+    # Atom triple indices must be treated separately
+    idx_triple_keys = {structure.idx_j_triples, structure.idx_k_triples}
+    # property_keys
+    property_keys = {'F', 'mo_coeffs_adjusted'}
+
+    coll_batch = {}
+    for key in elem:
+        if key in property_keys:
+            coll_batch[key] = torch.cat([torch.sub(d[key][1], d[key][0]) for d in batch], 0)
+        elif (key not in idx_keys) and (key not in idx_triple_keys):
+            coll_batch[key] = torch.cat([d[key] for d in batch], 1)
+        elif key in idx_keys:
+            coll_batch[key + "_local"] = torch.cat([d[key] for d in batch], 1)
+
+
+    idx_m_list = []
+    idx_i = []
+    idx_j = []
+    idx_i_triples = []
+    for idx in range(2):
+        seg_m = torch.cumsum(coll_batch[structure.n_atoms][idx], dim=0)
+        seg_m = torch.cat([torch.zeros((1,), dtype=seg_m.dtype), seg_m], dim=0)
+        idx_m = torch.repeat_interleave(
+            torch.arange(len(batch)), repeats=coll_batch[structure.n_atoms][idx], dim=0
+        )
+        idx_m_list.append(idx_m)
+
+        for key, list in zip(idx_keys, [idx_i, idx_j, idx_i_triples]):
+            if key in elem.keys():
+                list.append(torch.cat(
+                    [d[key][idx] + off for d, off in zip(batch, seg_m)], 0
+                ))
+
+    coll_batch[structure.idx_m] = torch.stack(idx_m_list)
+    for key, list in zip(idx_keys, [idx_i, idx_j, idx_i_triples]):
+        if len(list) != 0:
+            coll_batch[key] = torch.stack(list)
+            coll_batch[key] = coll_batch[key].long()
+
+    return coll_batch
+
+
 class AtomsLoader(DataLoader):
     """Data loader for subclasses of BaseAtomsData"""
 
@@ -71,8 +116,13 @@ class AtomsLoader(DataLoader):
         num_workers: int = 0,
         collate_fn: _collate_fn_t = _atoms_collate_fn,
         pin_memory: bool = False,
+        is_delta: bool = False,
         **kwargs
     ):
+
+        if is_delta:
+            collate_fn = _atoms_collate_double_fn
+
         super(AtomsLoader, self).__init__(
             dataset=dataset,
             batch_size=batch_size,

@@ -1,10 +1,11 @@
 import logging
 from typing import Callable
+from models.delta_model import get_delta_model
 import pytorch_lightning
 from pytorch_lightning.loggers import WandbLogger
 import torch
-import src.schnetpack as spk
-import schnetpack.transform as trn
+import schnetpack as schnetpack
+from src.schnetpack.data.datamodule import AtomsDataModule
 
 from models.loss_functions import mean_squared_error, rotated_mse, mo_energy_loss, hamiltonian_mse, hamiltonian_mse_energies
 from models.orbital_model import get_orbital_model
@@ -23,26 +24,31 @@ def train_model(
   database_path: str = None,
   split_file: str = None,
   use_wandb: bool = False,
-  initial_model_path: str = None
+  initial_model_path: str = None,
+  is_delta: bool = False
   
 ):
   """ Initializing a dataset """
-  dataset = spk.data.AtomsDataModule(
+  dataset = AtomsDataModule(
     datapath=database_path,
     batch_size=batch_size,
     split_file=split_file,
     transforms=[
-      trn.ASENeighborList(cutoff=5.),
-      trn.CastTo32()
+      schnetpack.transform.ASENeighborList(cutoff=5.),
+      schnetpack.transform.CastTo32()
     ],
     property_units={property: 1.0, 'guess': 1.0, 'overlap': 1.0},
     num_workers=0,
     pin_memory=True,
-    load_properties=[property, 'guess', 'overlap']
+    load_properties=[property, 'guess', 'overlap'],
+    is_delta=is_delta
   )
 
   """ Initiating the Model """
-  model = get_orbital_model(loss_fn=loss_fn, loss_type=loss_type, lr=lr, output_key=property, basis_set_size=basis_set_size)
+  if is_delta:
+    model = get_delta_model(loss_fn=loss_fn, loss_type=loss_type, lr=lr, output_key=property, basis_set_size=basis_set_size)
+  else:
+    model = get_orbital_model(loss_fn=loss_fn, loss_type=loss_type, lr=lr, output_key=property, basis_set_size=basis_set_size)
 
   if initial_model_path is not None:
     state_dict = torch.load(initial_model_path).state_dict()
@@ -64,7 +70,7 @@ def train_model(
   # callbacks for PyTroch Lightning Trainer
   logging.info("Setup trainer")
   callbacks = [
-      spk.train.ModelCheckpoint(
+      schnetpack.train.ModelCheckpoint(
           monitor="val_loss",
           mode="min",
           save_top_k=1,

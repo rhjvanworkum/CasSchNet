@@ -1,5 +1,47 @@
 import numpy as np
 
+def get_s1_energy(calc_log_file):
+  with open(calc_log_file, 'r') as f:
+    while True:
+      line = f.readline()
+
+      if 'RASSCF root number  1 Total energy' in line:
+        return float(line.replace('\n', '').split(' ')[-1])
+
+def get_s2_energy(calc_log_file):
+  with open(calc_log_file, 'r') as f:
+    while True:
+      line = f.readline()
+
+      if 'RASSCF root number  2 Total energy' in line:
+        return float(line.replace('\n', '').split(' ')[-1])
+
+def get_mo_energies(orb_file):
+  with open(orb_file, 'r') as f:
+
+    append = False
+    mo_energies = []
+
+    while True:
+      line = f.readline()
+
+      if "#INDEX" in line:
+        append = False
+
+      if append:
+        energies = line.replace('\n', '').split(' ')
+        for energy in energies:
+          if energy != '':
+            mo_energies.append(float(energy))
+
+      if "* ONE ELECTRON ENERGIES" in line:
+        append = True
+
+      if line == '':
+        break
+  
+  return mo_energies
+
 def read_in_orb_file(orb_file : str):
   orbitals = []
   energies = []

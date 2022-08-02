@@ -2,14 +2,14 @@ import os
 import shutil
 from typing import List
 from db.generate_split_files import generate_split
-from models.inference import predict_guess_F
+from models.inference import predict_guess_F, predict_guess_F_delta
 import numpy as np
 import h5py
 import multiprocessing
 from tqdm import tqdm
 
 from db.save_molcas_calculations import save_molcas_calculations_to_db
-from openmolcas.utils import read_log_file, write_coeffs_to_orb_file
+from openmolcas.utils import read_log_file, write_coeffs_to_orb_file, read_in_orb_file
 from models.training import train_model
 
 METHODS = [
@@ -148,6 +148,40 @@ def run_md_trajectory(geometry_base_dir: str, geometry_idxs: List[int], working_
   return total_n_iterations
 
 
+def run_md_trajectory_ml_delta(geometry_base_dir: str, geometry_idxs: List[int], calculations_base_dir: str, working_dir: str,
+                         initial_model_path: str, example_guess_file: str, n_update: int = 50, n_basis: int = 36) -> List[int]:
+  total_steps = len(geometry_idxs)
+  total_n_iterations = []
+
+  model_path = initial_model_path
+
+  for step, geometry_idx in enumerate(geometry_idxs):
+    # geometry_path
+    geometry_path = geometry_base_dir + 'geometry_' + str(geometry_idx) + '.xyz'
+    # perform calculation
+    if step == 0:
+      guess_file = initial_guess_file
+    else:
+      prev_orbs, prev_ener = read_in_orb_file(working_dir + 'geometry_' + str(geometry_idxs[step - 1]) + '/CASSCF.RasOrb')
+      prev_S = h5py.File(working_dir + 'geometry_' + str(geometry_idxs[step - 1]) + '/CASSCF.rasscf.h5', 'r').get('AO_OVERLAP_MATRIX')[:].reshape(-1, n_basis)
+      curr_S = h5py.File(calculations_base_dir + 'geometry_' + str(geometry_idx) + '/CASSCF.rasscf.h5', 'r').get('AO_OVERLAP_MATRIX')[:].reshape(-1, n_basis)
+      prev_F = np.matmul(prev_S, np.matmul(prev_orbs.T, np.matmul(np.diag(prev_ener), np.linalg.inv(prev_orbs.T))))
+      initial_guess = predict_guess_F_delta(model_path=model_path, 
+                                    prev_geometry_path=geometry_base_dir + 'geometry_' + str(geometry_idxs[step - 1]) + '.xyz',
+                                    curr_geometry_path=geometry_path,
+                                    prev_F=prev_F,
+                                    curr_S=curr_S,
+                                    basis=n_basis)
+      write_coeffs_to_orb_file(initial_guess.flatten(), example_guess_file, working_dir + 'temp_' + str(geometry_idx) + '.orb', n=n_basis)
+      guess_file = working_dir + 'temp_' + str(geometry_idx) + '.orb'
+
+    n_iterations = casscf_calculation(output_dir=working_dir, index=geometry_idx, geom_file=geometry_path, guess_file=guess_file)
+    total_n_iterations.append(n_iterations)
+
+    print('progress: ', step / len(geometry_idxs) * 100, '%')
+    
+  return total_n_iterations
+
 if __name__ == "__main__":
   """
   Execute this script from root dir
@@ -156,8 +190,8 @@ if __name__ == "__main__":
   geometry_base_dir = prefix + 'fulvene/geometries/MD_trajectories_5_01/'
   geometry_idxs = np.arange(200)
   calculations_base_dir = prefix + 'fulvene/openmolcas_calculations/MD_trajectory_1/'
-  working_dir = prefix + 'fulvene/openmolcas_calculations/MD_prev_geometry/'
-  initial_model_path = prefix + 'schnetpack/checkpoints/wd200_molcas_ANO-S-MB_ML_F.pt'
+  working_dir = prefix + 'fulvene/openmolcas_calculations/MD_delta_test/'
+  initial_model_path = prefix + 'schnetpack/checkpoints/md01_delta_test.pt'
   example_guess_file = prefix + 'schnetpack/openmolcas/calculation/input_files/geom.orb'
   initial_guess_file = example_guess_file
   n_update = 200
@@ -175,7 +209,11 @@ if __name__ == "__main__":
   # total_n_iterations = run_md_trajectory_ml(geometry_base_dir, geometry_idxs, calculations_base_dir, working_dir,
   #                      initial_model_path, example_guess_file, n_update, n_basis)
 
+  # run ML delta MD trajectory
+  total_n_iterations = run_md_trajectory_ml_delta(geometry_base_dir, geometry_idxs, calculations_base_dir, working_dir,
+                       initial_model_path, example_guess_file, n_update, n_basis)
+
   # # run previous geom MD trajectory
-  total_n_iterations = run_md_trajectory(geometry_base_dir, geometry_idxs, working_dir, initial_guess_file)
+  # total_n_iterations = run_md_trajectory(geometry_base_dir, geometry_idxs, working_dir, initial_guess_file)
 
   print(total_n_iterations)

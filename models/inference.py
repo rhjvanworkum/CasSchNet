@@ -83,3 +83,46 @@ def predict_guess_F(model_path, geometry_path, S, basis, cutoff=5.0):
   C = np.dot(X, C_prime).T
 
   return C
+
+""" Predict guess using model infering difference in a (effective) Fock matrix """
+def predict_guess_F_delta(model_path, prev_geometry_path, curr_geometry_path, prev_F, curr_S, basis, cutoff=7.0):
+  if torch.cuda.is_available():
+    device = torch.device('cuda')
+  else:
+    device = torch.device('cpu')
+
+  # transform geometry into input batch
+  atoms = io.read(prev_geometry_path)
+  converter = spk.interfaces.AtomsConverter(neighbor_list=trn.ASENeighborList(cutoff=cutoff), dtype=torch.float32, device=device)
+  prev_input = converter(atoms)
+  atoms = io.read(curr_geometry_path)
+  converter = spk.interfaces.AtomsConverter(neighbor_list=trn.ASENeighborList(cutoff=cutoff), dtype=torch.float32, device=device)
+  curr_input = converter(atoms)
+
+  input = {}
+  for key, value in prev_input.items():
+    input[key] = torch.stack((prev_input[key], curr_input[key]))
+  
+  # load model
+  model = torch.load(model_path, map_location=device).to(device)
+  model.eval()
+
+  # predicting Fock matrix
+  output = model(input)
+  values = output['F'].detach().cpu().numpy()[0]
+  delta = values.reshape(basis, basis)
+  delta = 0.5 * (delta + delta.T)
+  F = prev_F + delta
+
+  # F -> MO coeffs
+  e_s, U = np.linalg.eig(curr_S)
+  diag_s = np.diag(e_s ** -0.5)
+  X = np.dot(U, np.dot(diag_s, U.T))
+
+  F_prime = np.dot(X.T, np.dot(F, X))
+  evals_prime, C_prime = np.linalg.eig(F_prime)
+  indices = evals_prime.argsort()
+  C_prime = C_prime[:, indices]
+  C = np.dot(X, C_prime).T
+
+  return C

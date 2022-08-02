@@ -25,7 +25,8 @@ def train_model(
   split_file: str = None,
   use_wandb: bool = False,
   initial_model_path: str = None,
-  is_delta: bool = False
+  is_delta: bool = False,
+  cutoff: float = 5.0
   
 ):
   """ Initializing a dataset """
@@ -34,7 +35,7 @@ def train_model(
     batch_size=batch_size,
     split_file=split_file,
     transforms=[
-      schnetpack.transform.ASENeighborList(cutoff=5.),
+      schnetpack.transform.ASENeighborList(cutoff=cutoff),
       schnetpack.transform.CastTo32()
     ],
     property_units={property: 1.0, 'guess': 1.0, 'overlap': 1.0},

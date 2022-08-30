@@ -236,7 +236,7 @@ class AtomsData(Dataset):
 
         # read from ase-database
         with connect(self.dbpath) as conn:
-            row = conn.get(idx + 1)
+            row = conn.get(int(idx + 1))
         at = row.toatoms()
 
         # extract properties

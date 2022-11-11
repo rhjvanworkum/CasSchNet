@@ -45,9 +45,12 @@ class SO3net(nn.Module):
         self.n_atom_basis = n_atom_basis
         self.n_interactions = n_interactions
         self.lmax = lmax
-        self.cutoff_fn = hydra.utils.instantiate(cutoff_fn)
-        self.cutoff = cutoff_fn.cutoff
-        self.radial_basis = hydra.utils.instantiate(radial_basis)
+        # self.cutoff_fn = hydra.utils.instantiate(cutoff_fn)
+        # self.cutoff = cutoff_fn.cutoff
+        # self.radial_basis = hydra.utils.instantiate(radial_basis)
+        self.cutoff_fn = cutoff_fn
+        self.cutoff = 5.0
+        self.radial_basis = radial_basis
 
         self.embedding = nn.Embedding(max_z, n_atom_basis, padding_idx=0)
         self.sphharm = so3.RealSphericalHarmonics(lmax=lmax)

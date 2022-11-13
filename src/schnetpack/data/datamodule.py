@@ -22,6 +22,7 @@ from schnetpack.data import (
     SplittingStrategy,
     RandomSplit,
 )
+from schnetpack.data.loader import _atoms_collate_fn
 
 
 __all__ = ["AtomsDataModule", "AtomsDataModuleError"]
@@ -62,6 +63,7 @@ class AtomsDataModule(pl.LightningDataModule):
         cleanup_workdir_stage: Optional[str] = "test",
         splitting: Optional[SplittingStrategy] = None,
         pin_memory: Optional[bool] = False,
+        collate_fn: callable = _atoms_collate_fn
     ):
         """
         Args:
@@ -126,6 +128,7 @@ class AtomsDataModule(pl.LightningDataModule):
         self.data_workdir = data_workdir
         self.cleanup_workdir_stage = cleanup_workdir_stage
         self._pin_memory = pin_memory
+        self._collate_fn = collate_fn
 
         self.train_idx = None
         self.val_idx = None
@@ -356,6 +359,7 @@ class AtomsDataModule(pl.LightningDataModule):
                 num_workers=self.num_workers,
                 shuffle=True,
                 pin_memory=self._pin_memory,
+                collate_fn=self._collate_fn
             )
         return self._train_dataloader
 
@@ -366,6 +370,7 @@ class AtomsDataModule(pl.LightningDataModule):
                 batch_size=self.val_batch_size,
                 num_workers=self.num_val_workers,
                 pin_memory=self._pin_memory,
+                collate_fn=self._collate_fn
             )
         return self._val_dataloader
 
@@ -376,5 +381,6 @@ class AtomsDataModule(pl.LightningDataModule):
                 batch_size=self.test_batch_size,
                 num_workers=self.num_test_workers,
                 pin_memory=self._pin_memory,
+                collate_fn=self._collate_fn
             )
         return self._test_dataloader

@@ -59,7 +59,7 @@ class ModelOutput(nn.Module):
     def calculate_loss(self, pred, target):
         if self.loss_weight == 0 or self.loss_fn is None:
             return 0.0
-
+            
         loss = self.loss_weight * self.loss_fn(
             pred[self.name], target[self.target_property]
         )
@@ -129,7 +129,7 @@ class AtomisticTask(pl.LightningModule):
         self.grad_enabled = len(self.model.required_derivatives) > 0
         self.lr = optimizer_args["lr"]
         self.warmup_steps = warmup_steps
-        self.save_hyperparameters()
+        # self.save_hyperparameters()
 
     def setup(self, stage=None):
         if stage == "fit":
@@ -146,16 +146,17 @@ class AtomisticTask(pl.LightningModule):
         return loss
 
     def log_metrics(self, pred, targets, subset):
-        for output in self.outputs:
-            output.update_metrics(pred, targets, subset)
-            for metric_name, metric in output.metrics[subset].items():
-                self.log(
-                    f"{subset}_{output.name}_{metric_name}",
-                    metric,
-                    on_step=(subset == "train"),
-                    on_epoch=(subset != "train"),
-                    prog_bar=False,
-                )
+        pass
+        # for output in self.outputs:
+            # output.update_metrics(pred, targets, subset)
+            # for metric_name, metric in output.metrics[subset].items():
+            #     self.log(
+            #         f"{subset}_{output.name}_{metric_name}",
+            #         metric,
+            #         on_step=(subset == "train"),
+            #         on_epoch=(subset != "train"),
+            #         prog_bar=False,
+            #     )
 
     def apply_constraints(self, pred, targets):
         for output in self.outputs:
